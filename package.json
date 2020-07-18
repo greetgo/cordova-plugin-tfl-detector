@@ -1,0 +1,45 @@
+{
+  "name": "cordova-plugin-tfl-detector",
+  "version": "1.0.0",
+  "description": "Cordova plugin that allows camera interaction from HTML code for showing camera preview below or on top of the HTML.",
+  "cordova": {
+    "id": "cordova-plugin-tfl-detector",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "cordova",
+    "phonegap",
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios",
+    "android",
+    "ios",
+    "ionic",
+    "camera",
+    "cam",
+    "camera-preview",
+    "preview"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/greetgo/cordova-plugin-tfl-detector"
+  },
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": {
+    "name": "Zhasulan Ateev, Nazar Abu",
+    "email": "info@greet-go.com",
+    "url": "greetgo.kz"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/greetgo/cordova-plugin-tfl-detector/issues"
+  },
+  "homepage": "https://github.com/greetgo/cordova-plugin-tfl-detector/README.md"
+}

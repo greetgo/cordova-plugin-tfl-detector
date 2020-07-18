@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin id="cordova-plugin-tfl-detector" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>cordova-plugin-tfl-detector</name>
+  <description>Cordova plugin that allows camera interaction from HTML code. Show camera preview popup on top of the
+    HTML.
+  </description>
+  <license>MIT</license>
+  <keywords>
+    cordova,phonegap,ecosystem:cordova,cordova-android,cordova-ios,android,ios,ionic,camera,cam,camera-preview,preview
+  </keywords>
+  <repo>https://github.com/greetgo/cordova-plugin-tfl-detector.git</repo>
+  <issue>https://github.com/greetgo/cordova-plugin-tfl-detector/issues</issue>
+  <engines>
+    <engine name="cordova" version="&gt;=3.0.0"/>
+  </engines>
+
+  <js-module src="www/CameraPreview.js" name="CameraPreview">
+    <clobbers target="CameraPreview"/>
+  </js-module>
+
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="CameraPreview">
+        <param name="ios-package" value="CameraPreview" onload="true"/>
+      </feature>
+    </config-file>
+    <pods-config ios-min-version="11.0" use-frameworks="true"/>
+    <pod id="SnapKit"/>
+    <pod id="TensorFlowLiteSwift" version="2.2.0"/>
+
+    <source-file src="src/ios/CameraPreview.swift"/>
+    <source-file src="src/ios/detect-card/BackCameraViewController.swift" />
+    <source-file src="src/ios/detect-card/FontCameraViewController.swift" />
+    <source-file src="src/ios/detect-card/InferenceViewController.swift" />
+    <source-file src="src/ios/detect-card/PhotoShowViewController.swift" />
+
+    <source-file src="src/ios/detect-card-model/CameraFeedManager.swift" />
+    <source-file src="src/ios/detect-card-model/coco.txt" />
+    <source-file src="src/ios/detect-card-model/CurvedView.swift" />
+    <source-file src="src/ios/detect-card-model/CVPixelBufferExtension.swift" />
+    <source-file src="src/ios/detect-card-model/detect.tflite" />
+    <source-file src="src/ios/detect-card-model/Helpers.swift" />
+    <source-file src="src/ios/detect-card-model/InfoCell.swift" />
+    <source-file src="src/ios/detect-card-model/labelmap.txt" />
+    <source-file src="src/ios/detect-card-model/ModelDataHandler.swift" />
+    <source-file src="src/ios/detect-card-model/OverlayView.swift" />
+    <source-file src="src/ios/detect-card-model/PreviewView.swift" />
+    <source-file src="src/ios/detect-card-model/StringExtension.swift" />
+    <source-file src="src/ios/detect-card-model/UIColorExtension.swift" />
+    <source-file src="src/ios/detect-card-model/yolov4full.tflite" />
+    <dependency id="cordova-plugin-add-swift-support" version="^2.0.2"/>
+  </platform>
+
+  <platform name="android">
+    <source-file src="src/android/CameraActivity.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/CameraConnectionFragment.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/CameraPreview.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/CustomSurfaceView.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/DetectorActivity.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/DetectorActivityBase.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/DetectorHybridActivity.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/LegacyCameraConnectionFragment.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/Preview.java" target-dir="src/com/cordovaplugintflite"/>
+    <source-file src="src/android/TapGestureDetector.java" target-dir="src/com/cordovaplugintflite"/>
+
+    <source-file src="src/android/customview/AutoFitTextureView.java"
+                 target-dir="src/com/cordovaplugintflite/customview"/>
+    <source-file src="src/android/customview/OverlayView.java" target-dir="src/com/cordovaplugintflite/customview"/>
+    <source-file src="src/android/customview/RecognitionScoreView.java"
+                 target-dir="src/com/cordovaplugintflite/customview"/>
+    <source-file src="src/android/customview/ResultsView.java" target-dir="src/com/cordovaplugintflite/customview"/>
+
+    <source-file src="src/android/env/BorderedText.java" target-dir="src/com/cordovaplugintflite/env"/>
+    <source-file src="src/android/env/ImageUtils.java" target-dir="src/com/cordovaplugintflite/env"/>
+    <source-file src="src/android/env/Logger.java" target-dir="src/com/cordovaplugintflite/env"/>
+    <source-file src="src/android/env/Utils.java" target-dir="src/com/cordovaplugintflite/env"/>
+
+    <source-file src="src/android/tflite/Classifier.java" target-dir="src/com/cordovaplugintflite/tflite"/>
+    <source-file src="src/android/tflite/YoloV4Classifier.java" target-dir="src/com/cordovaplugintflite/tflite"/>
+
+    <source-file src="src/android/tracking/MultiBoxTracker.java" target-dir="src/com/cordovaplugintflite/tracking"/>
+
+    <source-file src="src/android/camera_activity.xml" target-dir="res/layout"/>
+    <source-file src="src/android/camera_theme.xml" target-dir="res/values"/>
+    <source-file src="src/android/camera_ids.xml" target-dir="res/values"/>
+    <source-file src="src/android/assets/yolov4full.tflite" target-dir="assets"/>
+    <source-file src="src/android/assets/coco.txt" target-dir="assets"/>
+
+    <framework src="androidx.exifinterface:exifinterface:1.2.0"/>
+    <framework src="com.google.android.material:material:1.1.0"/>
+    <framework src="org.tensorflow:tensorflow-lite:2.2.0"/>
+    <framework src="org.tensorflow:tensorflow-lite-gpu:2.1.0"/>
+    <framework src="androidx.constraintlayout:constraintlayout:1.1.3"/>
+    <framework src="androidx.exifinterface:exifinterface:1.2.0"/>
+
+    <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference"/>
+
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="CameraPreview">
+        <param name="android-package" value="com.cordovaplugintflite.CameraPreview"/>
+        <param name="onload" value="true"/>
+      </feature>
+    </config-file>
+
+    <config-file target="AndroidManifest.xml" parent="/manifest">
+      <uses-feature android:name="android.hardware.camera"/>
+      <uses-feature android:name="android.hardware.camera.autofocus"/>
+      <uses-permission android:name="android.permission.CAMERA"/>
+      <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+      <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    </config-file>
+
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <activity android:name="com.cordovaplugintflite.CameraActivity" android:screenOrientation="portrait"
+                android:theme="@style/CameraPreviewTheme"/>
+    </config-file>
+  </platform>
+</plugin>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="con.cordovaplugintflite.CameraActivity"
+  android:id="@+id/frame_container"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_gravity="center_horizontal|top"
+  android:layout_weight=".7">
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal|top"
+    android:id="@+id/frame_camera_cont"
+    android:layout_gravity="center_horizontal|top">
+
+    <!--    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--      xmlns:tools="http://schemas.android.com/tools"-->
+    <!--      android:id="@+id/container"-->
+    <!--      android:layout_width="match_parent"-->
+    <!--      android:layout_height="match_parent"-->
+    <!--      tools:context="org.tensorflow.demo.CameraActivity" />-->
+
+    <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/video_view"
+
+      android:scaleType="fitXY"
+      android:layout_gravity="top" />
+
+    <!--    <ImageView-->
+    <!--      android:layout_width="match_parent"-->
+    <!--      android:layout_height="match_parent"-->
+    <!--      android:id="@+id/picture_view"-->
+    <!--      android:layout_gravity="center|bottom"-->
+    <!--      android:adjustViewBounds="true"-->
+    <!--      android:scaleType="fitXY" />-->
+
+    <!--    <ImageView-->
+    <!--      android:layout_width="match_parent"-->
+    <!--      android:layout_height="match_parent"-->
+    <!--      android:id="@+id/frame_view"-->
+    <!--      android:layout_gravity="center_horizontal|bottom"-->
+    <!--      android:adjustViewBounds="true"-->
+    <!--      android:scaleType="centerInside" />-->
+
+    <!--    <LinearLayout-->
+    <!--      android:layout_width="match_parent"-->
+    <!--      android:layout_height="wrap_content"-->
+    <!--      android:orientation="horizontal">-->
+
+    <!--&lt;!&ndash;      <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:id="@+id/frame"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_marginTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:text="Frame"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:textColor="@android:color/black" />&ndash;&gt;-->
+
+    <!--      <TextView-->
+    <!--        android:id="@+id/frame_info"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:gravity="right"-->
+    <!--        android:text="640*480"-->
+    <!--        android:textColor="@android:color/black" />-->
+
+    <!--      <TextView-->
+    <!--        android:id="@+id/crop_info"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:gravity="right"-->
+    <!--        android:text="640*480"-->
+    <!--        android:textColor="@android:color/black" />-->
+
+    <!--      <TextView-->
+    <!--        android:id="@+id/inference_info"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:gravity="right"-->
+    <!--        android:text="640*480"-->
+    <!--        android:textColor="@android:color/black" />-->
+
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--      android:layout_width="match_parent"-->
+    <!--      android:layout_height="wrap_content"-->
+    <!--      android:orientation="horizontal">-->
+
+    <!--&lt;!&ndash;      <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:id="@+id/crop"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_marginTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:text="Crop"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:textColor="@android:color/black" />&ndash;&gt;-->
+
+    <!--      <TextView-->
+    <!--        android:id="@+id/crop_info"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:gravity="right"-->
+    <!--        android:text="640*480"-->
+    <!--        android:textColor="@android:color/black" />-->
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--      android:layout_width="match_parent"-->
+    <!--      android:layout_height="wrap_content"-->
+    <!--      android:orientation="horizontal">-->
+
+    <!--&lt;!&ndash;      <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:id="@+id/inference"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_width="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_height="wrap_content"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:layout_marginTop="10dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:text="Inference Time"&ndash;&gt;-->
+    <!--&lt;!&ndash;        android:textColor="@android:color/black" />&ndash;&gt;-->
+
+    <!--      <TextView-->
+    <!--        android:id="@+id/inference_info"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:gravity="right"-->
+    <!--        android:text="640*480"-->
+    <!--        android:textColor="@android:color/black" />-->
+    <!--    </LinearLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--      android:layout_width="wrap_content"-->
+    <!--      android:layout_height="wrap_content"-->
+    <!--      android:layout_alignParentRight="true"-->
+    <!--      android:background="@drawable/rectangle"-->
+    <!--      android:gravity="center"-->
+    <!--      android:orientation="horizontal"-->
+    <!--      android:padding="4dp">-->
+
+    <!--      <ImageView-->
+    <!--        android:id="@+id/minus"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:src="@drawable/ic_baseline_remove" />-->
+
+    <!--      <TextView-->
+    <!--        android:id="@+id/threads"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginLeft="10dp"-->
+    <!--        android:layout_marginRight="10dp"-->
+    <!--        android:text="1"-->
+    <!--        android:textColor="@android:color/black"-->
+    <!--        android:textSize="14sp" />-->
+
+    <!--      <ImageView-->
+    <!--        android:id="@+id/plus"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:src="@drawable/ic_baseline_add" />-->
+    <!--    </LinearLayout>-->
+
+  </RelativeLayout>
+
+  <com.cordovaplugintflite.customview.AutoFitTextureView
+    android:id="@+id/texture"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
+
+  <com.cordovaplugintflite.customview.OverlayView
+    android:id="@+id/tracking_overlay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
+
+  <!--  <FrameLayout-->
+  <!--    android:layout_width="match_parent"-->
+  <!--    android:layout_height="match_parent"-->
+  <!--    android:id="@+id/camera_loader"-->
+  <!--    android:scaleType="fitXY"-->
+  <!--    android:layout_gravity="top"-->
+  <!--    android:layout_alignWithParentIfMissing="false"-->
+  <!--    android:layout_alignParentTop="false"-->
+  <!--    android:layout_alignParentLeft="false"-->
+  <!--    android:layout_alignParentBottom="false"-->
+  <!--    android:layout_alignParentRight="false"-->
+  <!--    android:visibility="invisible"-->
+  <!--    android:background="#ff000000">-->
+
+  <!--    <ProgressBar-->
+  <!--      android:layout_width="wrap_content"-->
+  <!--      android:layout_height="wrap_content"-->
+  <!--      android:id="@+id/camera_loader_spinner"-->
+  <!--      android:layout_gravity="center"-->
+  <!--      android:indeterminate="false"-->
+  <!--      android:indeterminateBehavior="cycle"-->
+  <!--      android:indeterminateOnly="true"/>-->
+  <!--  </FrameLayout>-->
+</FrameLayout>
