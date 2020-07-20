@@ -166,8 +166,8 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
 //        self.cameraFeedManager.removeInputSession()
 //        self.cameraFeedManager.checkCameraConfigurationAndStartSession()
 //        present(PhotoShowViewController(image: image), animated: true)
-        let imageData = (image!.pngData()! as NSData)
-        segmentSelectionAtIndex2?(image!)
+        let imageData =  image.jpegData(compressionQuality: 1)
+        segmentSelectionAtIndex2?(imageData! as NSData)
     }
 
 
