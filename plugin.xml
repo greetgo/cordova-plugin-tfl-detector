@@ -47,11 +47,6 @@
     <source-file src="src/ios/detect-card-model/StringExtension.swift"/>
     <source-file src="src/ios/detect-card-model/UIColorExtension.swift"/>
 
-    <source-file src="src/ios/assets/coco.txt" framework="true"/>
-    <source-file src="src/ios/assets/labelmap.txt" framework="true"/>
-    <source-file src="src/ios/assets/detect.tflite" framework="true"/>
-    <source-file src="src/ios/assets/yolov4full.tflite" framework="true"/>
-
     <resource-file src="src/ios/assets/coco.txt"/>
     <resource-file src="src/ios/assets/labelmap.txt"/>
     <resource-file src="src/ios/assets/detect.tflite"/>
