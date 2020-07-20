@@ -40,7 +40,7 @@ enum CameraConfiguration {
 
 class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
 
-    
+
     // MARK: - Camera Related Instance Variables
     var session: AVCaptureSession = AVCaptureSession()
     private let previewView: PreviewView
@@ -50,13 +50,13 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
     private var isSessionRunning = false
     private var isBackCamera = false
 
-    
-    
+
+
     // MARK: - CameraFeedManagerDelegate
     weak var delegate: CameraFeedManagerDelegate?
 
-    
-    
+
+
     // MARK: - Initializer
     init(previewView: PreviewView, isBackCamera: Bool) {
         self.previewView = previewView
@@ -71,8 +71,8 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
         self.attemptToConfigureSession()
       }
 
-    
-    
+
+
     // MARK: - Session Start and End methods
     func checkCameraConfigurationAndStartSession() {
         sessionQueue.async {
@@ -110,7 +110,7 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
             }
         }
     }
-    
+
     private func startSession() {
         self.session.startRunning()
         self.isSessionRunning = self.session.isRunning
@@ -169,7 +169,7 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
         self.cameraConfiguration = .success
     }
     private func addVideoDeviceInput() -> Bool {
-        
+
         guard let camera  = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: isBackCamera ? .back : .front) else {
             fatalError("Cannot find camera")
         }
@@ -177,7 +177,7 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
             let videoDeviceInput = try AVCaptureDeviceInput(device: camera)
             if session.canAddInput(videoDeviceInput) {
                 session.addInput(videoDeviceInput)
-                
+
                 return true
             }
             else {
@@ -202,7 +202,7 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
         }
         return false
     }
-    
+
     func removeInputSession() {
         session.beginConfiguration()
         if let inputs = session.inputs as? [AVCaptureDeviceInput] {
@@ -212,8 +212,8 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
         }
         session.commitConfiguration()
     }
-    
-    
+
+
     // MARK: - Notification Observer Handling
     private func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(CameraFeedManager.sessionRuntimeErrorOccured(notification:)), name: NSNotification.Name.AVCaptureSessionRuntimeError, object: session)
@@ -226,8 +226,8 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
         NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVCaptureSessionInterruptionEnded, object: session)
       }
 
-    
-    
+
+
     // MARK: - Notification Observers
     @objc func sessionWasInterrupted(notification: Notification) {
 
@@ -273,9 +273,9 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
 
         }
       }
-    
-    
-    
+
+
+
     // MARK: - Camera switcher
     var frontDevice: AVCaptureDevice?
     var frontInput: AVCaptureInput?
@@ -307,14 +307,14 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
         session.addInput(front!)
         session.commitConfiguration()
     }
-    
-    
-    
+
+
+
     // MARK: - Shot image
     var capturePhotoOutput: AVCapturePhotoOutput?
     var previewLayer: AVCaptureVideoPreviewLayer?
     @objc var captureDevice: AVCaptureDevice?
-    
+
     func shotPhotoBack() -> Void {
         self.session = AVCaptureSession()
         self.session.sessionPreset = .photo
@@ -331,13 +331,15 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
         self.previewView.layer.addSublayer(self.previewLayer!)
 
         self.session.startRunning()
-        
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
         let photoSettings : AVCapturePhotoSettings!
         photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         photoSettings.isAutoStillImageStabilizationEnabled = true
         photoSettings.flashMode = .off
         photoSettings.isHighResolutionPhotoEnabled = false
         self.capturePhotoOutput?.capturePhoto(with: photoSettings, delegate: self)
+        }
     }
     func shotPhotoFront() -> Void {
         self.session = AVCaptureSession()
@@ -355,13 +357,15 @@ class CameraFeedManager: NSObject, AVCapturePhotoCaptureDelegate {
         self.previewView.layer.addSublayer(self.previewLayer!)
 
         self.session.startRunning()
-        
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
         let photoSettings : AVCapturePhotoSettings!
         photoSettings = AVCapturePhotoSettings.init(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         photoSettings.isAutoStillImageStabilizationEnabled = true
         photoSettings.flashMode = .off
         photoSettings.isHighResolutionPhotoEnabled = false
         self.capturePhotoOutput?.capturePhoto(with: photoSettings, delegate: self)
+        }
     }
 }
 
@@ -392,7 +396,7 @@ extension CameraFeedManager: AVCaptureVideoDataOutputSampleBufferDelegate {
             let dataProvider = CGDataProvider(data: dataImage as CFData)
             let cgImageRef: CGImage! = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
             let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: isBackCamera ? UIImage.Orientation.right : UIImage.Orientation.leftMirrored)
-            
+
             self.startSession()
             delegate?.sendImage(image: image)
         } else {
