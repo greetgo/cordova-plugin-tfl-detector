@@ -51,6 +51,11 @@
     <source-file src="src/ios/assets/labelmap.txt" framework="true"/>
     <source-file src="src/ios/assets/detect.tflite" framework="true"/>
     <source-file src="src/ios/assets/yolov4full.tflite" framework="true"/>
+
+    <resource-file src="src/ios/assets/coco.txt"/>
+    <resource-file src="src/ios/assets/labelmap.txt"/>
+    <resource-file src="src/ios/assets/detect.tflite"/>
+    <resource-file src="src/ios/assets/yolov4full.tflite"/>
     <dependency id="cordova-plugin-add-swift-support" version="^2.0.2"/>
   </platform>
 
