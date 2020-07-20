@@ -31,25 +31,26 @@
     <pod id="TensorFlowLiteSwift" version="2.2.0"/>
 
     <source-file src="src/ios/CameraPreview.swift"/>
-    <source-file src="src/ios/detect-card/BackCameraViewController.swift" />
-    <source-file src="src/ios/detect-card/FontCameraViewController.swift" />
-    <source-file src="src/ios/detect-card/InferenceViewController.swift" />
-    <source-file src="src/ios/detect-card/PhotoShowViewController.swift" />
+    <source-file src="src/ios/detect-card/BackCameraViewController.swift"/>
+    <source-file src="src/ios/detect-card/FontCameraViewController.swift"/>
+    <source-file src="src/ios/detect-card/InferenceViewController.swift"/>
+    <source-file src="src/ios/detect-card/PhotoShowViewController.swift"/>
 
-    <source-file src="src/ios/detect-card-model/CameraFeedManager.swift" />
-    <source-file src="src/ios/detect-card-model/coco.txt" />
-    <source-file src="src/ios/detect-card-model/CurvedView.swift" />
-    <source-file src="src/ios/detect-card-model/CVPixelBufferExtension.swift" />
-    <source-file src="src/ios/detect-card-model/detect.tflite" />
-    <source-file src="src/ios/detect-card-model/Helpers.swift" />
-    <source-file src="src/ios/detect-card-model/InfoCell.swift" />
-    <source-file src="src/ios/detect-card-model/labelmap.txt" />
-    <source-file src="src/ios/detect-card-model/ModelDataHandler.swift" />
-    <source-file src="src/ios/detect-card-model/OverlayView.swift" />
-    <source-file src="src/ios/detect-card-model/PreviewView.swift" />
-    <source-file src="src/ios/detect-card-model/StringExtension.swift" />
-    <source-file src="src/ios/detect-card-model/UIColorExtension.swift" />
-    <source-file src="src/ios/detect-card-model/yolov4full.tflite" />
+    <source-file src="src/ios/detect-card-model/CameraFeedManager.swift"/>
+    <source-file src="src/ios/detect-card-model/CurvedView.swift"/>
+    <source-file src="src/ios/detect-card-model/CVPixelBufferExtension.swift"/>
+    <source-file src="src/ios/detect-card-model/Helpers.swift"/>
+    <source-file src="src/ios/detect-card-model/InfoCell.swift"/>
+    <source-file src="src/ios/detect-card-model/ModelDataHandler.swift"/>
+    <source-file src="src/ios/detect-card-model/OverlayView.swift"/>
+    <source-file src="src/ios/detect-card-model/PreviewView.swift"/>
+    <source-file src="src/ios/detect-card-model/StringExtension.swift"/>
+    <source-file src="src/ios/detect-card-model/UIColorExtension.swift"/>
+
+    <source-file src="src/ios/assets/coco.txt" framework="true"/>
+    <source-file src="src/ios/assets/labelmap.txt" framework="true"/>
+    <source-file src="src/ios/assets/detect.tflite" framework="true"/>
+    <source-file src="src/ios/assets/yolov4full.tflite" framework="true"/>
     <dependency id="cordova-plugin-add-swift-support" version="^2.0.2"/>
   </platform>
 
