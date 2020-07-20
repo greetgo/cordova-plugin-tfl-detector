@@ -20,6 +20,7 @@
 
             fontVC.segmentSelectionAtIndex = {[weak self] (str) in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: str);
+                pluginResult?.setKeepCallbackAs(true)
                 self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
             }
         }else {
@@ -31,6 +32,7 @@
 
             backVC.segmentSelectionAtIndex = {[weak self] (str) in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: str);
+                pluginResult?.setKeepCallbackAs(true)
                 self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
             }
         }
