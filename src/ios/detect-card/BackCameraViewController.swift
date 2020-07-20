@@ -10,9 +10,10 @@ import UIKit
 class BackCameraViewController: UIViewController {
 
     var segmentSelectionAtIndex: ((String) -> ())?
-    var segmentSelectionAtIndex2: ((UIImage) -> ())?
-    
-    
+    var segmentSelectionAtIndex2: ((NSData) -> ())?
+
+
+
     // MARK: - Constants
     private let displayFont = UIFont.systemFont(ofSize: 14.0, weight: .medium)
     private let edgeOffset: CGFloat = 2.0
@@ -23,9 +24,9 @@ class BackCameraViewController: UIViewController {
     private let delayBetweenInferencesMs: Double = 200
     private var initialBottomSpace: CGFloat = 0.0
     private var isCameraBack: Bool = false
-    
-    
-    
+
+
+
     // MARK: - Properties
     lazy var previewView: PreviewView = {
         let view = PreviewView()
@@ -45,32 +46,32 @@ class BackCameraViewController: UIViewController {
         label.text = "available"
         return label
     }()
-    
-    
-    
+
+
+
     // MARK: - Holds the results at any time
     private var result: Resultt?
     private var previousInferenceTimeMs: TimeInterval = Date.distantPast.timeIntervalSince1970 * 1000
-    
-    
-    
+
+
+
     // MARK: - Controllers that manage functionality
     private lazy var cameraFeedManager = CameraFeedManager(previewView: previewView, isBackCamera: false)
     private var modelDataHandler: ModelDataHandler? = ModelDataHandler(modelFileInfo: MobileNetSSD.modelInfo, labelsFileInfo: MobileNetSSD.labelsInfo)
     private var inferenceViewController: InferenceViewController?
-    
-    
-    
+
+
+
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
             super.viewWillAppear(animated)
-          
+
             cameraFeedManager.checkCameraConfigurationAndStartSession()
 
         }
     override func viewDidLoad() {
                 super.viewDidLoad()
-                
+
                 guard modelDataHandler != nil else {
                     fatalError("Failed to load model")
                 }
@@ -91,19 +92,19 @@ class BackCameraViewController: UIViewController {
                 return .lightContent
         }
 
-    
-    
+
+
     // MARK: - SetupViews
     func setupViews() -> Void {
             view.backgroundColor = .white
             overlayView.backgroundColor = .clear
             self.navigationItem.setHidesBackButton(true, animated: true)
-            
+
             view.addSubview(previewView)
             previewView.addSubview(overlayView)
             previewView.addSubview(resumeButton)
             previewView.addSubview(cameraUnavailableLabel)
-            
+
             previewView.snp.makeConstraints { (make) in
                 make.edges.equalToSuperview()
             }
@@ -123,9 +124,9 @@ class BackCameraViewController: UIViewController {
                 make.height.equalTo(30)
             }
         }
-    
 
-    
+
+
     // MARK: - Camera Actions
     func tapShot() -> Void {
         self.cameraFeedManager.shotPhotoFront()
@@ -156,7 +157,7 @@ extension BackCameraViewController: InferenceViewControllerDelegate {
 // MARK: - CameraFeedManagerDelegate Methods
 extension BackCameraViewController: CameraFeedManagerDelegate {
 
-    
+
     func didOutput(pixelBuffer: CVPixelBuffer) {
         runModel(onPixelBuffer: pixelBuffer)
     }
@@ -164,11 +165,11 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
         self.cameraFeedManager.removeInputSession()
 //        self.cameraFeedManager.checkCameraConfigurationAndStartSession()
 //        present(PhotoShowViewController(image: image), animated: true)
-        
-        segmentSelectionAtIndex2?(image)
+        let imageData = (image!.pngData()! as NSData)
+        segmentSelectionAtIndex2?(image!)
     }
 
-    
+
     // MARK: - Custom functions
     func sessionRunTimeErrorOccured() {
             // Handles session run time error by updating the UI and providing a button if session can be manually resumed.
@@ -196,7 +197,7 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
             }
           }
     func presentVideoConfigurationErrorAlert() {
-                
+
             let alertController = UIAlertController(title: "Confirguration Failed", message: "Configuration of camera has failed.", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alertController.addAction(okAction)
@@ -219,7 +220,7 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
 
           }
 
-    
+
     @objc  func runModel(onPixelBuffer pixelBuffer: CVPixelBuffer) {
 
         // Run the live camera pixelBuffer through tensorFlow to get the result

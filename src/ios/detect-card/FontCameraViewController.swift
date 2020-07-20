@@ -9,11 +9,12 @@
 import UIKit
 class FontCameraViewController: UIViewController {
 
-    
+
     var segmentSelectionAtIndex: ((String) -> ())?
-    var segmentSelectionAtIndex2: ((UIImage) -> ())?
-    
-    
+    var segmentSelectionAtIndex2: ((NSData) -> ())?
+
+
+
     // MARK: - Constants
     private let displayFont = UIFont.systemFont(ofSize: 14.0, weight: .medium)
     private let edgeOffset: CGFloat = 2.0
@@ -24,9 +25,9 @@ class FontCameraViewController: UIViewController {
     private let delayBetweenInferencesMs: Double = 200
     private var initialBottomSpace: CGFloat = 0.0
     private var isCameraBack: Bool = true
-    
-    
-    
+
+
+
     // MARK: - Properties
     lazy var previewView: PreviewView = {
         let view = PreviewView()
@@ -46,31 +47,31 @@ class FontCameraViewController: UIViewController {
         label.text = "available"
         return label
     }()
-    
-    
-    
+
+
+
     // MARK: - Holds the results at any time
     private var result: Resultt?
     private var previousInferenceTimeMs: TimeInterval = Date.distantPast.timeIntervalSince1970 * 1000
-    
-    
-    
+
+
+
     // MARK: - Controllers that manage functionality
     private lazy var cameraFeedManager = CameraFeedManager(previewView: previewView, isBackCamera: true)
     private var modelDataHandler: ModelDataHandler? = ModelDataHandler(modelFileInfo: MobileNetSSD.modelInfo, labelsFileInfo: MobileNetSSD.labelsInfo)
     private var inferenceViewController: InferenceViewController?
-    
-    
-    
+
+
+
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-      
+
         cameraFeedManager.checkCameraConfigurationAndStartSession()
     }
     override func viewDidLoad() {
                 super.viewDidLoad()
-                
+
                 guard modelDataHandler != nil else {
                     fatalError("Failed to load model")
                 }
@@ -91,19 +92,19 @@ class FontCameraViewController: UIViewController {
                 return .lightContent
         }
 
-    
-    
+
+
     // MARK: - SetupViews
     func setupViews() -> Void {
         view.backgroundColor = .white
         overlayView.backgroundColor = .clear
         self.navigationItem.setHidesBackButton(true, animated: true)
-        
+
         view.addSubview(previewView)
         previewView.addSubview(overlayView)
         previewView.addSubview(resumeButton)
         previewView.addSubview(cameraUnavailableLabel)
-        
+
         previewView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
@@ -123,9 +124,9 @@ class FontCameraViewController: UIViewController {
             make.height.equalTo(30)
         }
     }
-    
 
-    
+
+
     // MARK: - Camera Actions
     func tapShot() -> Void {
         self.cameraFeedManager.shotPhotoBack()
@@ -156,8 +157,8 @@ extension FontCameraViewController: InferenceViewControllerDelegate {
 
 // MARK: - CameraFeedManagerDelegate Methods
 extension FontCameraViewController: CameraFeedManagerDelegate {
-    
-        
+
+
     func didOutput(pixelBuffer: CVPixelBuffer) {
                 runModel(onPixelBuffer: pixelBuffer)
             }
@@ -165,11 +166,11 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
 //        self.cameraFeedManager.removeInputSession()
 //        self.cameraFeedManager.checkCameraConfigurationAndStartSession()
 //        present(PhotoShowViewController(image: image), animated: true)
-        
-        segmentSelectionAtIndex2?(image)
+        let imageData = (image!.pngData()! as NSData)
+        segmentSelectionAtIndex2?(image!)
     }
-        
-        
+
+
     // MARK: - Custom functions
     func sessionRunTimeErrorOccured() {
             // Handles session run time error by updating the UI and providing a button if session can be manually resumed.
@@ -197,7 +198,7 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
             }
           }
     func presentVideoConfigurationErrorAlert() {
-                
+
             let alertController = UIAlertController(title: "Confirguration Failed", message: "Configuration of camera has failed.", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
             alertController.addAction(okAction)
@@ -219,8 +220,8 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
             present(alertController, animated: true, completion: nil)
 
           }
-    
-    
+
+
     @objc  func runModel(onPixelBuffer pixelBuffer: CVPixelBuffer) {
 
         let currentTimeMs = Date().timeIntervalSince1970 * 1000
