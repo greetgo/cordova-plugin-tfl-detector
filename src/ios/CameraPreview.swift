@@ -73,7 +73,21 @@
     }
 
     @objc(takePicture:)
-    func takePicture(command: CDVInvokedUrlCommand) {}
+    func takePicture(command: CDVInvokedUrlCommand) {
+        if isBack == true {
+                fontVC.tapShot()
+                fontVC.segmentSelectionAtIndex2 = {[weak self] (image) in
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
+                    self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+                }
+        }else {
+                backVC.tapShot()
+                backVC.segmentSelectionAtIndex2 = {[weak self] (image) in
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
+                    self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+                }
+            }
+    }
 
     @objc(onBackButton:)
     func onBackButton(command: CDVInvokedUrlCommand) {}
