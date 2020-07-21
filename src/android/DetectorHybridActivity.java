@@ -44,7 +44,7 @@ public class DetectorHybridActivity extends CameraActivity {
 
   private static final DetectorMode MODE = DetectorMode.TF_OD_API;
   private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
-  private static final boolean MAINTAIN_ASPECT = true;
+  private static final boolean MAINTAIN_ASPECT = false;
   //  private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
   private static final Size DESIRED_PREVIEW_SIZE = new Size(1280, 960);
   //  private static final Size DESIRED_PREVIEW_SIZE = new Size(1280, 960);
