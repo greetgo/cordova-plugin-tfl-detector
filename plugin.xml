@@ -59,10 +59,7 @@
     <source-file src="src/android/CameraConnectionFragment.java" target-dir="src/com/cordovaplugintflite"/>
     <source-file src="src/android/CameraPreview.java" target-dir="src/com/cordovaplugintflite"/>
     <source-file src="src/android/CustomSurfaceView.java" target-dir="src/com/cordovaplugintflite"/>
-    <source-file src="src/android/DetectorActivity.java" target-dir="src/com/cordovaplugintflite"/>
-    <source-file src="src/android/DetectorActivityBase.java" target-dir="src/com/cordovaplugintflite"/>
     <source-file src="src/android/DetectorHybridActivity.java" target-dir="src/com/cordovaplugintflite"/>
-    <source-file src="src/android/LegacyCameraConnectionFragment.java" target-dir="src/com/cordovaplugintflite"/>
     <source-file src="src/android/Preview.java" target-dir="src/com/cordovaplugintflite"/>
     <source-file src="src/android/TapGestureDetector.java" target-dir="src/com/cordovaplugintflite"/>
 
@@ -88,6 +85,8 @@
     <source-file src="src/android/camera_ids.xml" target-dir="res/values"/>
     <source-file src="src/android/assets/yolov4full.tflite" target-dir="assets"/>
     <source-file src="src/android/assets/coco.txt" target-dir="assets"/>
+    <source-file src="src/android/res/overlay_card.png" target-dir="res/drawable"/>
+    <source-file src="src/android/res/overlay_ellipse.png" target-dir="res/drawable"/>
 
     <framework src="androidx.exifinterface:exifinterface:1.2.0"/>
     <framework src="com.google.android.material:material:1.1.0"/>

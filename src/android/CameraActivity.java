@@ -1,49 +1,41 @@
 package com.cordovaplugintflite;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.SurfaceTexture;
-import android.media.AudioManager;
-import android.media.Image;
-import android.media.ImageReader;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Trace;
-import android.util.Base64;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.SurfaceTexture;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.Camera.ShutterCallback;
+import android.media.AudioManager;
 import android.media.CamcorderProfile;
+import android.media.Image;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Size;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.exifinterface.media.ExifInterface;
 
@@ -55,11 +47,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.Exception;
-import java.lang.Integer;
 import java.nio.ByteBuffer;
-import java.util.List;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public abstract class CameraActivity extends Fragment {
@@ -113,6 +103,12 @@ public abstract class CameraActivity extends Fragment {
   public int x;
   public int y;
 
+  public String overlay;
+  public double x0 = 0;
+  public double y0 = 0;
+  public double w0 = 1;
+  public double h0 = 1;
+
   private enum RecordingState {INITIALIZING, STARTED, STOPPED}
 
   private RecordingState mRecordingState = RecordingState.INITIALIZING;
@@ -135,9 +131,21 @@ public abstract class CameraActivity extends Fragment {
 
     textureView = view.findViewById(getResources().getIdentifier("texture", "id", appResourcesPackage));
 
-//    frameValueTextView = view.findViewById(getResources().getIdentifier("frame_info", "id", appResourcesPackage));
-//    cropValueTextView = view.findViewById(getResources().getIdentifier("crop_info", "id", appResourcesPackage));
-//    inferenceTimeTextView = view.findViewById(getResources().getIdentifier("inference_info", "id", appResourcesPackage));
+    float density = getContext().getResources().getDisplayMetrics().density;
+    if (!"selfie".equals(overlay)) {
+      ImageView imageView = view.findViewById(getResources().getIdentifier("card_layout", "id", appResourcesPackage));
+      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (240 * density));
+      params.leftMargin = (int) (x0 * width);
+      params.topMargin = (int) (y0 * height);
+      imageView.setLayoutParams(params);
+
+    } else {
+      ImageView cardOverlay = view.findViewById(getResources().getIdentifier("card_layout", "id", appResourcesPackage));
+      cardOverlay.setVisibility(View.GONE);
+
+      ImageView selfieOverlay = view.findViewById(getResources().getIdentifier("selfie_layout", "id", appResourcesPackage));
+      selfieOverlay.setVisibility(View.VISIBLE);
+    }
 
     return view;
   }
@@ -147,6 +155,17 @@ public abstract class CameraActivity extends Fragment {
     this.y = y;
     this.width = width;
     this.height = height;
+  }
+
+  public void setRectToDetect(final double x, final double y, final double w, final double h) {
+    this.x0 = x;
+    this.y0 = y;
+    this.w0 = w;
+    this.h0 = h;
+  }
+
+  public void setOverlay(String overlay) {
+    this.overlay = overlay;
   }
 
   protected void createCameraPreview(){
@@ -544,15 +563,20 @@ public abstract class CameraActivity extends Fragment {
             matrix.preRotate(rotationInDegrees);
           }
 
+          Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
           // Check if matrix has changed. In that case, apply matrix and override data
           if (!matrix.isIdentity()) {
-            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
             bitmap = applyMatrix(bitmap, matrix);
-
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, currentQuality, outputStream);
-            data = outputStream.toByteArray();
           }
+
+          int w = bitmap.getWidth();
+          int h = bitmap.getHeight();
+          bitmap = Bitmap.createBitmap(bitmap, (int) (x0 * w), (int) (y0 * h), (int) (w0 * w), (int) (h0 * h));
+
+          ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+          bitmap.compress(Bitmap.CompressFormat.JPEG, currentQuality, outputStream);
+          data = outputStream.toByteArray();
         }
 
         if (!storeToFile) {

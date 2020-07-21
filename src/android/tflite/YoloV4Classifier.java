@@ -354,17 +354,12 @@ public class YoloV4Classifier implements Classifier {
               final float w = (float) (Math.exp(out[0][y][x][b][2]) * ANCHORS[2 * MASKS[i][b]]);
               final float h = (float) (Math.exp(out[0][y][x][b][3]) * ANCHORS[2 * MASKS[i][b] + 1]);
 
-              final RectF rect =
-                                    /*new RectF(
-                                            Math.max(0, xPos - w / 2),
-                                            Math.max(0, yPos - h / 2),
-                                            Math.min(bitmap.getWidth() - 1, xPos + w / 2),
-                                            Math.min(bitmap.getHeight() - 1, yPos + h / 2));*/
-                new RectF(
-                  Math.max(0, xPos - w / 2) - 30,
-                  Math.max(0, yPos - h / 2) - 10/* + 30*/,
-                  Math.min(bitmap.getWidth() - 1, xPos + w / 2) + 30,
-                  Math.min(bitmap.getHeight() - 1, yPos + h / 2) + 13/* + 30*/);
+              final RectF rect = new RectF(
+                Math.max(0, xPos - w / 2),
+                Math.max(0, yPos - h / 2),
+                Math.min(bitmap.getWidth() - 1, xPos + w / 2),
+                Math.min(bitmap.getHeight() - 1, yPos + h / 2)
+              );
               detections.add(new Recognition("" + offset, labels.get(detectedClass),
                 confidenceInClass, rect, detectedClass));
             }

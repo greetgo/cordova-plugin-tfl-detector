@@ -44,10 +44,10 @@ public class DetectorHybridActivity extends CameraActivity {
 
   private static final DetectorMode MODE = DetectorMode.TF_OD_API;
   private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
-  private static final boolean MAINTAIN_ASPECT = false;
-//  private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
+  private static final boolean MAINTAIN_ASPECT = true;
+  //  private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
   private static final Size DESIRED_PREVIEW_SIZE = new Size(1280, 960);
-//  private static final Size DESIRED_PREVIEW_SIZE = new Size(1280, 960);
+  //  private static final Size DESIRED_PREVIEW_SIZE = new Size(1280, 960);
   private static final boolean SAVE_PREVIEW_BITMAP = false;
   private static final float TEXT_SIZE_DIP = 10;
   OverlayView trackingOverlay;
@@ -95,7 +95,6 @@ public class DetectorHybridActivity extends CameraActivity {
 //                    TF_OD_API_LABELS_FILE,
 //                    TF_OD_API_INPUT_SIZE,
 //                    TF_OD_API_IS_QUANTIZED);
-      cropSize = TF_OD_API_INPUT_SIZE;
     } catch (final IOException e) {
       e.printStackTrace();
       LOGGER.e(e, "Exception initializing classifier!");
@@ -116,11 +115,19 @@ public class DetectorHybridActivity extends CameraActivity {
     rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
     croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Config.ARGB_8888);
 
-    frameToCropTransform =
-      ImageUtils.getTransformationMatrix(
-        previewWidth, previewHeight,
-        cropSize, cropSize,
-        sensorOrientation, MAINTAIN_ASPECT);
+    if (sensorOrientation % 90 != 0) {
+      frameToCropTransform =
+        ImageUtils.getTransformationMatrix(
+          (int) (previewWidth * w0), (int) (previewHeight * h0),
+          cropSize, cropSize,
+          sensorOrientation, MAINTAIN_ASPECT);
+    } else {
+      frameToCropTransform =
+        ImageUtils.getTransformationMatrix(
+          (int) (previewWidth * h0), (int) (previewHeight * w0),
+          cropSize, cropSize,
+          sensorOrientation, MAINTAIN_ASPECT);
+    }
 
     cropToFrameTransform = new Matrix();
     frameToCropTransform.invert(cropToFrameTransform);
@@ -156,10 +163,19 @@ public class DetectorHybridActivity extends CameraActivity {
 
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
 
+    int w = rgbFrameBitmap.getWidth();
+    int h = rgbFrameBitmap.getHeight();
+    Bitmap rgbFrameBitmapCustom;
+    if (sensorOrientation % 90 != 0) {
+      rgbFrameBitmapCustom = Bitmap.createBitmap(rgbFrameBitmap, (int) (x0 * w), (int) (y0 * h), (int) (w0 * w), (int) (h0 * h));
+    } else {
+      rgbFrameBitmapCustom = Bitmap.createBitmap(rgbFrameBitmap, (int) (y0 * w), (int) (x0 * h), (int) (h0 * w), (int) (w0 * h));
+    }
+
     readyForNextImage();
 
     final Canvas canvas = new Canvas(croppedBitmap);
-    canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
+    canvas.drawBitmap(rgbFrameBitmapCustom, frameToCropTransform, null);
     // For examining the actual TF input.
     if (SAVE_PREVIEW_BITMAP) {
       ImageUtils.saveBitmap(croppedBitmap);
