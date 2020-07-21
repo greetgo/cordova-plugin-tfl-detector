@@ -85,8 +85,22 @@
     <source-file src="src/android/camera_ids.xml" target-dir="res/values"/>
     <source-file src="src/android/assets/yolov4full.tflite" target-dir="assets"/>
     <source-file src="src/android/assets/coco.txt" target-dir="assets"/>
+
     <source-file src="src/android/res/overlay_card.png" target-dir="res/drawable"/>
+    <source-file src="src/android/res/drawable-hdpi/overlay_card.png" target-dir="res/drawable-hdpi"/>
+    <source-file src="src/android/res/drawable-ldpi/overlay_card.png" target-dir="res/drawable-ldpi"/>
+    <source-file src="src/android/res/drawable-mdpi/overlay_card.png" target-dir="res/drawable-mdpi"/>
+    <source-file src="src/android/res/drawable-xhdpi/overlay_card.png" target-dir="res/drawable-xhdpi"/>
+    <source-file src="src/android/res/drawable-xxhdpi/overlay_card.png" target-dir="res/drawable-xxhdpi"/>
+    <source-file src="src/android/res/drawable-xxxhdpi/overlay_card.png" target-dir="res/drawable-xxxhdpi"/>
+
     <source-file src="src/android/res/overlay_ellipse.png" target-dir="res/drawable"/>
+    <source-file src="src/android/res/drawable-hdpi/overlay_ellipse.png" target-dir="res/drawable-hdpi"/>
+    <source-file src="src/android/res/drawable-ldpi/overlay_ellipse.png" target-dir="res/drawable-ldpi"/>
+    <source-file src="src/android/res/drawable-mdpi/overlay_ellipse.png" target-dir="res/drawable-mdpi"/>
+    <source-file src="src/android/res/drawable-xhdpi/overlay_ellipse.png" target-dir="res/drawable-xhdpi"/>
+    <source-file src="src/android/res/drawable-xxhdpi/overlay_ellipse.png" target-dir="res/drawable-xxhdpi"/>
+    <source-file src="src/android/res/drawable-xxxhdpi/overlay_ellipse.png" target-dir="res/drawable-xxxhdpi"/>
 
     <framework src="androidx.exifinterface:exifinterface:1.2.0"/>
     <framework src="com.google.android.material:material:1.1.0"/>

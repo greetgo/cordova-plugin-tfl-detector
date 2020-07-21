@@ -199,24 +199,19 @@ public class DetectorHybridActivity extends CameraActivity {
           paint.setStyle(Style.STROKE);
           paint.setStrokeWidth(2.0f);
 
-          float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
-          switch (MODE) {
-            case TF_OD_API:
-              minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
-              break;
-          }
-
           final List<Classifier.Recognition> mappedRecognitions =
             new LinkedList<Classifier.Recognition>();
 
-          if (results.isEmpty()) eventListener.onObjectDetected(null);
+//          if (results.isEmpty()) eventListener.onObjectDetected(null);
 
+          String detectedObject = null;
+          float max = 0;
           for (final Classifier.Recognition result : results) {
 //          if (results.size() > 0) {
 //            final Classifier.Recognition result = results.get(0);
 
             final RectF location = result.getLocation();
-            if (location != null && result.getConfidence() >= minimumConfidence) {
+            if (location != null && result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API) {
               canvas.drawRect(location, paint);
 
               cropToFrameTransform.mapRect(location);
@@ -224,12 +219,22 @@ public class DetectorHybridActivity extends CameraActivity {
               result.setLocation(location);
               mappedRecognitions.add(result);
 
-              eventListener.onObjectDetected(result.getTitle());
-              break;
+              if (result.getConfidence() > max) {
+                max = result.getConfidence();
+                detectedObject = result.getTitle();
+              }
+
+//              eventListener.onObjectDetected(result.getTitle());
+//              LOGGER.i("Detected object: " + result.getTitle());
+//              break;
             }
           }
 
-          tracker.trackResults(mappedRecognitions, currTimestamp);
+          eventListener.onObjectDetected(detectedObject);
+
+          //uncomment line below to enable bounding-box tracker
+//          tracker.trackResults(mappedRecognitions, currTimestamp);
+//          LOGGER.i("Detected object: " + detectedObject);
           trackingOverlay.postInvalidate();
 
           computingDetection = false;
