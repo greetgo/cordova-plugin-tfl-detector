@@ -7,11 +7,11 @@
 //
 
 import UIKit
+import AVFoundation
 class BackCameraViewController: UIViewController {
 
     var segmentSelectionAtIndex: ((String) -> ())?
     var segmentSelectionAtIndex2: ((NSData) -> ())?
-
 
 
     // MARK: - Constants
@@ -64,80 +64,189 @@ class BackCameraViewController: UIViewController {
 
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-
-            cameraFeedManager.checkCameraConfigurationAndStartSession()
-
-        }
+        super.viewWillAppear(animated)
+        
+        previewView.isHidden = true
+        cameraFeedManager.checkCameraConfigurationAndStartSession()
+    }
     override func viewDidLoad() {
-                super.viewDidLoad()
+        super.viewDidLoad()
 
-                guard modelDataHandler != nil else {
-                    fatalError("Failed to load model")
-                }
-                cameraFeedManager.delegate = self
-                overlayView.clearsContextBeforeDrawing = true
+        guard modelDataHandler != nil else {fatalError("Failed to load model")}
+        cameraFeedManager.delegate = self
+        overlayView.clearsContextBeforeDrawing = true
 
-                setupViews()
-        }
+        setupViews()
+    }
     override func viewWillDisappear(_ animated: Bool) {
-                super.viewWillDisappear(animated)
+        super.viewWillDisappear(animated)
 
-                cameraFeedManager.stopSession()
-              }
-    override func didReceiveMemoryWarning() {
-              super.didReceiveMemoryWarning()
+        cameraFeedManager.stopSession()
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.startCamera()
+            self.cameraFeedManager.resumeInterruptedSession { (bool) in
+                self.previewView.isHidden = false
             }
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-                return .lightContent
         }
+    }
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+    }
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
 
 
 
     // MARK: - SetupViews
     func setupViews() -> Void {
-            view.backgroundColor = .white
-            overlayView.backgroundColor = .clear
-            self.navigationItem.setHidesBackButton(true, animated: true)
+        view.backgroundColor = hexStringToUIColor(hex: "#1d3664")
+        overlayView.backgroundColor = .clear
+        self.navigationItem.setHidesBackButton(true, animated: true)
 
-            view.addSubview(previewView)
-            previewView.addSubview(overlayView)
-            previewView.addSubview(resumeButton)
-            previewView.addSubview(cameraUnavailableLabel)
+        view.addSubview(previewView)
+        previewView.addSubview(overlayView)
+        previewView.addSubview(resumeButton)
+        previewView.addSubview(cameraUnavailableLabel)
 
-            previewView.snp.makeConstraints { (make) in
-                make.edges.equalToSuperview()
-            }
-            overlayView.snp.makeConstraints { (make) in
-                make.edges.equalToSuperview()
-            }
-            resumeButton.snp.makeConstraints { (make) in
-                make.top.equalTo(overlayView.snp.bottom).offset(10)
-                make.centerX.equalToSuperview()
-                make.width.equalTo(100)
-                make.height.equalTo(30)
-            }
-            cameraUnavailableLabel.snp.makeConstraints { (make) in
-                make.top.equalTo(resumeButton.snp.bottom).offset(10)
-                make.centerX.equalToSuperview()
-                make.width.equalTo(100)
-                make.height.equalTo(30)
-            }
+        previewView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
+        overlayView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
+        resumeButton.snp.makeConstraints { (make) in
+            make.top.equalTo(overlayView.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(100)
+            make.height.equalTo(30)
+        }
+        cameraUnavailableLabel.snp.makeConstraints { (make) in
+            make.top.equalTo(resumeButton.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
+            make.width.equalTo(100)
+            make.height.equalTo(30)
+        }
+        cameraView.isHidden = true
+        view.addSubview(cameraView)
+        cameraView.snp.makeConstraints { (make) in
+            make.edges.equalToSuperview()
+        }
+    }
+    func hexStringToUIColor (hex:String) -> UIColor {
+        var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+
+        if (cString.hasPrefix("#")) {
+            cString.remove(at: cString.startIndex)
         }
 
+        if ((cString.count) != 6) {
+            return UIColor.gray
+        }
+
+        var rgbValue:UInt64 = 0
+        Scanner(string: cString).scanHexInt64(&rgbValue)
+
+        return UIColor(
+            red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+            green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+            blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+            alpha: CGFloat(1.0)
+        )
+    }
 
 
-    // MARK: - Camera Actions
+
+    // MARK: - New Part
+    var captureSession: AVCaptureSession!
+    var cameraOutput: AVCapturePhotoOutput!
+    var previewLayer: AVCaptureVideoPreviewLayer!
+    var frontDevice: AVCaptureDevice?
+    var frontInput: AVCaptureInput?
+    
+    lazy var cameraView: UIView = {
+        let view = UIView()
+        return view
+    }()
+    
+    func startCamera() {
+        captureSession = AVCaptureSession()
+        captureSession.sessionPreset = AVCaptureSession.Preset.photo
+        cameraOutput = AVCapturePhotoOutput()
+
+        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front), let input = try? AVCaptureDeviceInput(device: device) {
+            if (captureSession.canAddInput(input)) {
+                captureSession.addInput(input)
+                if (captureSession.canAddOutput(cameraOutput)) {
+                    captureSession.addOutput(cameraOutput)
+                    previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                    previewLayer.frame = cameraView.bounds
+                    cameraView.layer.addSublayer(previewLayer)
+                    captureSession.startRunning()
+                }
+            } else { print("issue here : captureSesssion.canAddInput") }
+        } else { print("some problem here") }
+    }
     func tapShot() -> Void {
-        self.cameraFeedManager.shotPhotoFront()
+        captureSession.startRunning()
+        self.cameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.cameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+        }
     }
     func tapStop() -> Void {
-        self.cameraFeedManager.removeInputSession()
-        self.cameraFeedManager.stopSession()
-        cameraFeedManager.delegate = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.removeInputSession()
+            self.stopSession()
+            self.cameraOutput = nil
+            
+            self.cameraFeedManager.removeInputSession()
+            self.cameraFeedManager.stopSession()
+            self.cameraFeedManager.delegate = nil
+        }
+    }
+    
+    private let sessionQueue = DispatchQueue(label: "sessionQueue")
+    func removeInputSession() -> Void {
+        captureSession.beginConfiguration()
+        if let inputs = captureSession.inputs as? [AVCaptureDeviceInput] {
+            for input in inputs {
+                captureSession.removeInput(input)
+            }
+        }
+        captureSession.commitConfiguration()
+    }
+    func stopSession() {
+        sessionQueue.async {
+            if self.captureSession.isRunning {
+                self.captureSession.stopRunning()
+            }
+        }
     }
 }
 
+
+// MARK: - AVCapturePhotoCaptureDelegate
+extension BackCameraViewController: AVCapturePhotoCaptureDelegate {
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        if let error = error {
+            print("error occured : \(error.localizedDescription)")
+        }
+        if let dataImage = photo.fileDataRepresentation() {
+            let dataProvider = CGDataProvider(data: dataImage as CFData)
+            let cgImageRef: CGImage! = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
+            let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImage.Orientation.right)
+            let imageData =  image.jpegData(compressionQuality: 1)
+            segmentSelectionAtIndex2?(imageData! as NSData)
+        } else {
+            print("some error here")
+        }
+    }
+}
 
 
 // MARK: - InferenceViewControllerDelegate Methods

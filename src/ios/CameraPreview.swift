@@ -61,32 +61,35 @@
     func stopCamera(command: CDVInvokedUrlCommand) {
         if isBack == true {
             fontVC.tapStop()
+            window?.removeFromSuperview()
             self.window = UIWindow(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "stop Camera");
             self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
         }else {
             backVC.tapStop()
+            window?.removeFromSuperview()
             self.window = UIWindow(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "stop Camera");
             self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
         }
     }
 
+
     @objc(takePicture:)
     func takePicture(command: CDVInvokedUrlCommand) {
         if isBack == true {
-                fontVC.tapShot()
-                fontVC.segmentSelectionAtIndex2 = {[weak self] (image) in
-                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
-                    self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
-                }
+                    fontVC.tapShot()
+                    fontVC.segmentSelectionAtIndex2 = {[weak self] (image) in
+                        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
+                        self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+                    }
         }else {
-                backVC.tapShot()
-                backVC.segmentSelectionAtIndex2 = {[weak self] (image) in
-                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
-                    self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
-                }
-            }
+                    backVC.tapShot()
+                    backVC.segmentSelectionAtIndex2 = {[weak self] (image) in
+                        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
+                        self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+                    }
+        }
     }
 
     @objc(onBackButton:)
