@@ -116,15 +116,21 @@ public class DetectorHybridActivity extends CameraActivity {
     croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Config.ARGB_8888);
 
     if (sensorOrientation % 90 != 0) {
+      int height = (int) (h0 * previewHeight);
+      int width = Math.min((int) (w0 * previewWidth), (int) (height * 1.58));
+
       frameToCropTransform =
         ImageUtils.getTransformationMatrix(
-          (int) (previewWidth * w0), (int) (previewHeight * h0),
+          width, height,
           cropSize, cropSize,
           sensorOrientation, MAINTAIN_ASPECT);
     } else {
+      int width = (int) (h0 * previewWidth);
+      int height = Math.min((int) (w0 * previewHeight), (int) (width * 1.58));
+
       frameToCropTransform =
         ImageUtils.getTransformationMatrix(
-          (int) (previewWidth * h0), (int) (previewHeight * w0),
+          width, height,
           cropSize, cropSize,
           sensorOrientation, MAINTAIN_ASPECT);
     }
@@ -167,9 +173,17 @@ public class DetectorHybridActivity extends CameraActivity {
     int h = rgbFrameBitmap.getHeight();
     Bitmap rgbFrameBitmapCustom;
     if (sensorOrientation % 90 != 0) {
-      rgbFrameBitmapCustom = Bitmap.createBitmap(rgbFrameBitmap, (int) (x0 * w), (int) (y0 * h), (int) (w0 * w), (int) (h0 * h));
+      int height = (int) (h0 * h);
+      int y = (int) (y0 * h);
+      int width = Math.min((int) (w0 * w), (int) (height * 1.58));
+      int x = ((int) (w0 * w) - width) / 2;
+      rgbFrameBitmapCustom = Bitmap.createBitmap(rgbFrameBitmap, x, y, width, height);
     } else {
-      rgbFrameBitmapCustom = Bitmap.createBitmap(rgbFrameBitmap, (int) (y0 * w), (int) (x0 * h), (int) (h0 * w), (int) (w0 * h));
+      int width = (int) (h0 * w);
+      int x = (int) (y0 * w);
+      int height = Math.min((int) (w0 * h), (int) (width * 1.58));
+      int y = ((int) (w0 * h) - height) / 2;
+      rgbFrameBitmapCustom = Bitmap.createBitmap(rgbFrameBitmap, x, y, width, height);
     }
 
     readyForNextImage();

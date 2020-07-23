@@ -572,7 +572,13 @@ public abstract class CameraActivity extends Fragment {
 
           int w = bitmap.getWidth();
           int h = bitmap.getHeight();
-          bitmap = Bitmap.createBitmap(bitmap, (int) (x0 * w), (int) (y0 * h), (int) (w0 * w), (int) (h0 * h));
+
+          int height = (int) (h0 * h);
+          int y = (int) (y0 * h);
+          int width = Math.min((int) (w0 * w), (int) (height * 1.58));
+          int x = ((int) (w0 * w) - width) / 2;
+
+          bitmap = Bitmap.createBitmap(bitmap, x, y, width, height);
 
           ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
           bitmap.compress(Bitmap.CompressFormat.JPEG, currentQuality, outputStream);
