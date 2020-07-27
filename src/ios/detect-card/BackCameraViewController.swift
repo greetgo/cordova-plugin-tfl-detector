@@ -65,9 +65,9 @@ class BackCameraViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        previewView.isHidden = true
-        cameraFeedManager.checkCameraConfigurationAndStartSession()
+
+//         previewView.isHidden = true
+//         cameraFeedManager.checkCameraConfigurationAndStartSession()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,21 +77,23 @@ class BackCameraViewController: UIViewController {
         overlayView.clearsContextBeforeDrawing = true
 
         setupViews()
+
+        previewView.isHidden = true
+
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.startCamera()
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    self.cameraFeedManager.checkCameraConfigurationAndStartSession()
+                    self.previewView.isHidden = false
+                }
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         cameraFeedManager.stopSession()
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.startCamera()
-            self.cameraFeedManager.resumeInterruptedSession { (bool) in
-                self.previewView.isHidden = false
-            }
-        }
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -167,12 +169,12 @@ class BackCameraViewController: UIViewController {
     var previewLayer: AVCaptureVideoPreviewLayer!
     var frontDevice: AVCaptureDevice?
     var frontInput: AVCaptureInput?
-    
+
     lazy var cameraView: UIView = {
         let view = UIView()
         return view
     }()
-    
+
     func startCamera() {
         captureSession = AVCaptureSession()
         captureSession.sessionPreset = AVCaptureSession.Preset.photo
@@ -193,7 +195,6 @@ class BackCameraViewController: UIViewController {
     }
     func tapShot() -> Void {
         captureSession.startRunning()
-        self.cameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             self.cameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
         }
@@ -203,13 +204,13 @@ class BackCameraViewController: UIViewController {
             self.removeInputSession()
             self.stopSession()
             self.cameraOutput = nil
-            
+
             self.cameraFeedManager.removeInputSession()
             self.cameraFeedManager.stopSession()
             self.cameraFeedManager.delegate = nil
         }
     }
-    
+
     private let sessionQueue = DispatchQueue(label: "sessionQueue")
     func removeInputSession() -> Void {
         captureSession.beginConfiguration()
@@ -366,7 +367,7 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
         }
         if displayResult.inferences.count > 0 {
             print("className ", displayResult.inferences[0].className)
-            segmentSelectionAtIndex?(displayResult.inferences[0].className)
+            self.segmentSelectionAtIndex?(displayResult.inferences[0].className)
         }
     }
     func drawAfterPerformingCalculations(onInferences inferences: [Inference], withImageSize imageSize:CGSize) {

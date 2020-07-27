@@ -69,8 +69,8 @@ class FontCameraViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        previewView.isHidden = true
-        cameraFeedManager.checkCameraConfigurationAndStartSession()
+//        previewView.isHidden = true
+//        cameraFeedManager.checkCameraConfigurationAndStartSession()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,20 +80,22 @@ class FontCameraViewController: UIViewController {
         overlayView.clearsContextBeforeDrawing = true
 
         setupViews()
+        
+        previewView.isHidden = true
+        
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.startCamera()
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.cameraFeedManager.checkCameraConfigurationAndStartSession()
+            self.previewView.isHidden = false
+        }
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         cameraFeedManager.stopSession()
-    }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.startCamera()
-            self.cameraFeedManager.resumeInterruptedSession { (bool) in
-                self.previewView.isHidden = false
-            }
-        }
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -196,7 +198,6 @@ class FontCameraViewController: UIViewController {
     }
     func tapShot() -> Void {
         captureSession.startRunning()
-        self.cameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             self.cameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
         }
@@ -369,7 +370,7 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
         }
         if displayResult.inferences.count > 0 {
             print("className ", displayResult.inferences[0].className)
-            segmentSelectionAtIndex?(displayResult.inferences[0].className)
+            self.segmentSelectionAtIndex?(displayResult.inferences[0].className)
         }
     }
     func drawAfterPerformingCalculations(onInferences inferences: [Inference], withImageSize imageSize:CGSize) {
