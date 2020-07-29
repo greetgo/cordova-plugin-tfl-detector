@@ -13,7 +13,7 @@ class BackCameraViewController: UIViewController {
     var segmentSelectionAtIndex: ((String) -> ())?
     var segmentSelectionAtIndex2: ((NSData) -> ())?
     var imageFrame: UIImage?
-    
+
 
     // MARK: - Constants
     private let displayFont = UIFont.systemFont(ofSize: 14.0, weight: .medium)
@@ -140,11 +140,11 @@ class BackCameraViewController: UIViewController {
             alpha: CGFloat(1.0)
         )
     }
-    
-    
+
+
     // MARK: - Functions
     func tapShot() -> Void {
-        let imageData = imageFrame!.jpegData(compressionQuality: 1)
+        let imageData = imageFrame!.jpegData(compressionQuality: 0.5)
         segmentSelectionAtIndex2?(imageData! as NSData)
     }
     func tapStop() -> Void {
@@ -180,7 +180,7 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
         self.cameraFeedManager.removeInputSession()
 //        self.cameraFeedManager.checkCameraConfigurationAndStartSession()
 //        present(PhotoShowViewController(image: image), animated: true)
-        let imageData =  image.jpegData(compressionQuality: 1)
+        let imageData =  image.jpegData(compressionQuality: 0.5)
         segmentSelectionAtIndex2?(imageData! as NSData)
     }
 
@@ -273,7 +273,7 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
         if displayResult.inferences.count > 0 {
             print("className:", displayResult.inferences[0].className)
             print("imageFrame", displayResult.imageFrame)
-            
+
 //            self.imageFrame = UIImage(pixelBuffer: displayResult.imageFrame)
             self.imageFrame = UIImage(pixelBuffer: displayResult.imageFull)
             segmentSelectionAtIndex?(displayResult.inferences[0].className)

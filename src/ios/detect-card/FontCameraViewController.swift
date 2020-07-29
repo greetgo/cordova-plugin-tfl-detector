@@ -174,14 +174,14 @@ class FontCameraViewController: UIViewController {
             make.width.equalTo(100)
             make.height.equalTo(30)
         }
-        
+
         //shadow view
         let height0 = ceil(UIScreen.main.bounds.width * 1 * 0.7)
         let y0 = Int((UIScreen.main.bounds.height * 1) - height0) / 2
-        
+
         previewView.addSubview(shadowTop)
         previewView.addSubview(shadowBottom)
-        
+
         previewView.addSubview(linetop)
         previewView.addSubview(linetop1)
         previewView.addSubview(linetop2)
@@ -191,7 +191,7 @@ class FontCameraViewController: UIViewController {
         previewView.addSubview(linebottom1)
         previewView.addSubview(linebottom2)
         previewView.addSubview(linebottom3)
-        
+
         shadowTop.snp.makeConstraints { (make) in
             make.top.width.equalToSuperview()
             make.height.equalTo(y0)
@@ -224,7 +224,7 @@ class FontCameraViewController: UIViewController {
             make.width.equalTo(10)
             make.height.equalTo(85)
         }
-        
+
         linebottom.snp.makeConstraints { (make) in
             make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
             make.left.equalToSuperview().offset(10)
@@ -271,11 +271,11 @@ class FontCameraViewController: UIViewController {
             alpha: CGFloat(1.0)
         )
     }
-    
-    
+
+
     // MARK: - Functions
     func tapShot() -> Void {
-        let imageData = imageFrame!.jpegData(compressionQuality: 1)
+        let imageData = imageFrame!.jpegData(compressionQuality: 0.5)
         segmentSelectionAtIndex2?(imageData! as NSData)
     }
     func tapStop() -> Void {
@@ -311,7 +311,7 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
 //        self.cameraFeedManager.removeInputSession()
 //        self.cameraFeedManager.checkCameraConfigurationAndStartSession()
 //        present(PhotoShowViewController(image: image), animated: true)
-        let imageData =  image.jpegData(compressionQuality: 1)
+        let imageData =  image.jpegData(compressionQuality: 0.5)
         segmentSelectionAtIndex2?(imageData! as NSData)
     }
 
@@ -400,7 +400,7 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
         if displayResult.inferences.count > 0 {
             print("className:", displayResult.inferences[0].className)
             print("imageFrame", displayResult.imageFrame)
-            
+
             self.imageFrame = UIImage(pixelBuffer: displayResult.imageFrame)
             segmentSelectionAtIndex?(displayResult.inferences[0].className)
         }
