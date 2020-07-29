@@ -8,12 +8,14 @@
 
 import UIKit
 import AVFoundation
+import VideoToolbox
 
 class FontCameraViewController: UIViewController {
 
 
     var segmentSelectionAtIndex: ((String) -> ())?
     var segmentSelectionAtIndex2: ((NSData) -> ())?
+    var imageFrame: UIImage?
 
 
 
@@ -49,6 +51,57 @@ class FontCameraViewController: UIViewController {
         label.text = "available"
         return label
     }()
+    //just view
+    lazy var shadowTop: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        return view
+    }()
+    lazy var shadowBottom: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        return view
+    }()
+    lazy var linetop: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        return view
+    }()
+    lazy var linetop1: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        return view
+    }()
+    lazy var linetop2: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        return view
+    }()
+    lazy var linetop3: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        return view
+    }()
+    lazy var linebottom: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        return view
+    }()
+    lazy var linebottom1: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        return view
+    }()
+    lazy var linebottom2: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        return view
+    }()
+    lazy var linebottom3: UIView = {
+        let view = UIView()
+        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        return view
+    }()
 
 
 
@@ -68,9 +121,7 @@ class FontCameraViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-//        previewView.isHidden = true
-//        cameraFeedManager.checkCameraConfigurationAndStartSession()
+        cameraFeedManager.checkCameraConfigurationAndStartSession()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,18 +131,6 @@ class FontCameraViewController: UIViewController {
         overlayView.clearsContextBeforeDrawing = true
 
         setupViews()
-        
-        previewView.isHidden = true
-        
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.startCamera()
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.cameraFeedManager.checkCameraConfigurationAndStartSession()
-            self.previewView.isHidden = false
-        }
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -136,10 +175,79 @@ class FontCameraViewController: UIViewController {
             make.height.equalTo(30)
         }
         
-        cameraView.isHidden = true
-        view.addSubview(cameraView)
-        cameraView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
+        //shadow view
+        let height0 = ceil(UIScreen.main.bounds.width * 1 * 0.7)
+        let y0 = Int((UIScreen.main.bounds.height * 1) - height0) / 2
+        
+        previewView.addSubview(shadowTop)
+        previewView.addSubview(shadowBottom)
+        
+        previewView.addSubview(linetop)
+        previewView.addSubview(linetop1)
+        previewView.addSubview(linetop2)
+        previewView.addSubview(linetop3)
+
+        previewView.addSubview(linebottom)
+        previewView.addSubview(linebottom1)
+        previewView.addSubview(linebottom2)
+        previewView.addSubview(linebottom3)
+        
+        shadowTop.snp.makeConstraints { (make) in
+            make.top.width.equalToSuperview()
+            make.height.equalTo(y0)
+        }
+        shadowBottom.snp.makeConstraints { (make) in
+            make.top.equalTo(shadowTop.snp.bottom).offset(height0)
+            make.bottom.width.equalToSuperview()
+        }
+        linetop.snp.makeConstraints { (make) in
+            make.top.equalTo(shadowTop.snp.bottom).offset(10)
+            make.left.equalToSuperview().offset(10)
+            make.height.equalTo(10)
+            make.width.equalTo(85)
+        }
+        linetop1.snp.makeConstraints { (make) in
+            make.top.equalTo(shadowTop.snp.bottom).offset(10)
+            make.left.equalToSuperview().offset(10)
+            make.width.equalTo(10)
+            make.height.equalTo(85)
+        }
+        linetop2.snp.makeConstraints { (make) in
+            make.top.equalTo(shadowTop.snp.bottom).offset(10)
+            make.right.equalToSuperview().offset(-10)
+            make.height.equalTo(10)
+            make.width.equalTo(85)
+        }
+        linetop3.snp.makeConstraints { (make) in
+            make.top.equalTo(shadowTop.snp.bottom).offset(10)
+            make.right.equalToSuperview().offset(-10)
+            make.width.equalTo(10)
+            make.height.equalTo(85)
+        }
+        
+        linebottom.snp.makeConstraints { (make) in
+            make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
+            make.left.equalToSuperview().offset(10)
+            make.height.equalTo(10)
+            make.width.equalTo(85)
+        }
+        linebottom1.snp.makeConstraints { (make) in
+            make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
+            make.left.equalToSuperview().offset(10)
+            make.width.equalTo(10)
+            make.height.equalTo(85)
+        }
+        linebottom2.snp.makeConstraints { (make) in
+            make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
+            make.right.equalToSuperview().offset(-10)
+            make.height.equalTo(10)
+            make.width.equalTo(85)
+        }
+        linebottom3.snp.makeConstraints { (make) in
+            make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
+            make.right.equalToSuperview().offset(-10)
+            make.width.equalTo(10)
+            make.height.equalTo(85)
         }
     }
     func hexStringToUIColor (hex:String) -> UIColor {
@@ -163,93 +271,17 @@ class FontCameraViewController: UIViewController {
             alpha: CGFloat(1.0)
         )
     }
-
     
     
-    // MARK: - New Part
-    var captureSession: AVCaptureSession!
-    var cameraOutput: AVCapturePhotoOutput!
-    var previewLayer: AVCaptureVideoPreviewLayer!
-    var frontDevice: AVCaptureDevice?
-    var frontInput: AVCaptureInput?
-    
-    lazy var cameraView: UIView = {
-        let view = UIView()
-        return view
-    }()
-    
-    func startCamera() {
-        captureSession = AVCaptureSession()
-        captureSession.sessionPreset = AVCaptureSession.Preset.photo
-        cameraOutput = AVCapturePhotoOutput()
-
-        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), let input = try? AVCaptureDeviceInput(device: device) {
-            if (captureSession.canAddInput(input)) {
-                captureSession.addInput(input)
-                if (captureSession.canAddOutput(cameraOutput)) {
-                    captureSession.addOutput(cameraOutput)
-                    previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-                    previewLayer.frame = cameraView.bounds
-                    cameraView.layer.addSublayer(previewLayer)
-                    captureSession.startRunning()
-                }
-            } else { print("issue here : captureSesssion.canAddInput") }
-        } else { print("some problem here") }
-    }
+    // MARK: - Functions
     func tapShot() -> Void {
-        captureSession.startRunning()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            self.cameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
-        }
+        let imageData = imageFrame!.jpegData(compressionQuality: 1)
+        segmentSelectionAtIndex2?(imageData! as NSData)
     }
     func tapStop() -> Void {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.removeInputSession()
-            self.stopSession()
-            self.cameraOutput = nil
-            
-            self.cameraFeedManager.removeInputSession()
-            self.cameraFeedManager.stopSession()
-            self.cameraFeedManager.delegate = nil
-        }
-    }
-    
-    private let sessionQueue = DispatchQueue(label: "sessionQueue")
-    
-    func removeInputSession() -> Void {
-        captureSession.beginConfiguration()
-        if let inputs = captureSession.inputs as? [AVCaptureDeviceInput] {
-            for input in inputs {
-                captureSession.removeInput(input)
-            }
-        }
-        captureSession.commitConfiguration()
-    }
-    func stopSession() {
-        sessionQueue.async {
-            if self.captureSession.isRunning {
-                self.captureSession.stopRunning()
-            }
-        }
-    }
-}
-
-
-// MARK: - AVCapturePhotoCaptureDelegate
-extension FontCameraViewController: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let error = error {
-            print("error occured : \(error.localizedDescription)")
-        }
-        if let dataImage = photo.fileDataRepresentation() {
-            let dataProvider = CGDataProvider(data: dataImage as CFData)
-            let cgImageRef: CGImage! = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
-            let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImage.Orientation.right)
-            let imageData =  image.jpegData(compressionQuality: 1)
-            segmentSelectionAtIndex2?(imageData! as NSData)
-        } else {
-            print("some error here")
-        }
+        self.cameraFeedManager.removeInputSession()
+        self.cameraFeedManager.stopSession()
+        self.cameraFeedManager.delegate = nil
     }
 }
 
@@ -258,20 +290,19 @@ extension FontCameraViewController: AVCapturePhotoCaptureDelegate {
 // MARK: - InferenceViewControllerDelegate Methods
 extension FontCameraViewController: InferenceViewControllerDelegate {
     func didChangeThreadCount(to count: Int) {
-                if modelDataHandler?.threadCount == count { return }
-                modelDataHandler = ModelDataHandler(
-                    modelFileInfo: MobileNetSSD.modelInfo,
-                    labelsFileInfo: MobileNetSSD.labelsInfo,
-                    threadCount: count
-                )
-            }
+        if modelDataHandler?.threadCount == count { return }
+        modelDataHandler = ModelDataHandler(
+            modelFileInfo: MobileNetSSD.modelInfo,
+            labelsFileInfo: MobileNetSSD.labelsInfo,
+            threadCount: count
+        )
+    }
 }
 
 
 
 // MARK: - CameraFeedManagerDelegate Methods
 extension FontCameraViewController: CameraFeedManagerDelegate {
-
 
     func didOutput(pixelBuffer: CVPixelBuffer) {
                 runModel(onPixelBuffer: pixelBuffer)
@@ -283,7 +314,6 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
         let imageData =  image.jpegData(compressionQuality: 1)
         segmentSelectionAtIndex2?(imageData! as NSData)
     }
-
 
     // MARK: - Custom functions
     func sessionRunTimeErrorOccured() {
@@ -335,7 +365,6 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
 
           }
 
-
     @objc  func runModel(onPixelBuffer pixelBuffer: CVPixelBuffer) {
 
         let currentTimeMs = Date().timeIntervalSince1970 * 1000
@@ -369,8 +398,11 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
           self.drawAfterPerformingCalculations(onInferences: displayResult.inferences, withImageSize: CGSize(width: CGFloat(width), height: CGFloat(height)))
         }
         if displayResult.inferences.count > 0 {
-            print("className ", displayResult.inferences[0].className)
-            self.segmentSelectionAtIndex?(displayResult.inferences[0].className)
+            print("className:", displayResult.inferences[0].className)
+            print("imageFrame", displayResult.imageFrame)
+            
+            self.imageFrame = UIImage(pixelBuffer: displayResult.imageFrame)
+            segmentSelectionAtIndex?(displayResult.inferences[0].className)
         }
     }
     func drawAfterPerformingCalculations(onInferences inferences: [Inference], withImageSize imageSize:CGSize) {
@@ -426,4 +458,10 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
           }
 }
 
-
+extension UIImage {
+    public convenience init?(pixelBuffer: CVPixelBuffer) {
+        var cgImage: CGImage?
+        VTCreateCGImageFromCVPixelBuffer(pixelBuffer, options: nil, imageOut: &cgImage)
+        self.init(cgImage: cgImage!)
+    }
+}

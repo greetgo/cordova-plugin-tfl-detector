@@ -12,7 +12,8 @@ class BackCameraViewController: UIViewController {
 
     var segmentSelectionAtIndex: ((String) -> ())?
     var segmentSelectionAtIndex2: ((NSData) -> ())?
-
+    var imageFrame: UIImage?
+    
 
     // MARK: - Constants
     private let displayFont = UIFont.systemFont(ofSize: 14.0, weight: .medium)
@@ -48,7 +49,6 @@ class BackCameraViewController: UIViewController {
     }()
 
 
-
     // MARK: - Holds the results at any time
     private var result: Resultt?
     private var previousInferenceTimeMs: TimeInterval = Date.distantPast.timeIntervalSince1970 * 1000
@@ -65,9 +65,7 @@ class BackCameraViewController: UIViewController {
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-//         previewView.isHidden = true
-//         cameraFeedManager.checkCameraConfigurationAndStartSession()
+        cameraFeedManager.checkCameraConfigurationAndStartSession()
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,18 +75,6 @@ class BackCameraViewController: UIViewController {
         overlayView.clearsContextBeforeDrawing = true
 
         setupViews()
-
-        previewView.isHidden = true
-
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.startCamera()
-                }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    self.cameraFeedManager.checkCameraConfigurationAndStartSession()
-                    self.previewView.isHidden = false
-                }
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -101,7 +87,6 @@ class BackCameraViewController: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
     }
-
 
 
     // MARK: - SetupViews
@@ -133,11 +118,6 @@ class BackCameraViewController: UIViewController {
             make.width.equalTo(100)
             make.height.equalTo(30)
         }
-        cameraView.isHidden = true
-        view.addSubview(cameraView)
-        cameraView.snp.makeConstraints { (make) in
-            make.edges.equalToSuperview()
-        }
     }
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
@@ -160,92 +140,17 @@ class BackCameraViewController: UIViewController {
             alpha: CGFloat(1.0)
         )
     }
-
-
-
-    // MARK: - New Part
-    var captureSession: AVCaptureSession!
-    var cameraOutput: AVCapturePhotoOutput!
-    var previewLayer: AVCaptureVideoPreviewLayer!
-    var frontDevice: AVCaptureDevice?
-    var frontInput: AVCaptureInput?
-
-    lazy var cameraView: UIView = {
-        let view = UIView()
-        return view
-    }()
-
-    func startCamera() {
-        captureSession = AVCaptureSession()
-        captureSession.sessionPreset = AVCaptureSession.Preset.photo
-        cameraOutput = AVCapturePhotoOutput()
-
-        if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front), let input = try? AVCaptureDeviceInput(device: device) {
-            if (captureSession.canAddInput(input)) {
-                captureSession.addInput(input)
-                if (captureSession.canAddOutput(cameraOutput)) {
-                    captureSession.addOutput(cameraOutput)
-                    previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-                    previewLayer.frame = cameraView.bounds
-                    cameraView.layer.addSublayer(previewLayer)
-                    captureSession.startRunning()
-                }
-            } else { print("issue here : captureSesssion.canAddInput") }
-        } else { print("some problem here") }
-    }
+    
+    
+    // MARK: - Functions
     func tapShot() -> Void {
-        captureSession.startRunning()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            self.cameraOutput.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
-        }
+        let imageData = imageFrame!.jpegData(compressionQuality: 1)
+        segmentSelectionAtIndex2?(imageData! as NSData)
     }
     func tapStop() -> Void {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.removeInputSession()
-            self.stopSession()
-            self.cameraOutput = nil
-
-            self.cameraFeedManager.removeInputSession()
-            self.cameraFeedManager.stopSession()
-            self.cameraFeedManager.delegate = nil
-        }
-    }
-
-    private let sessionQueue = DispatchQueue(label: "sessionQueue")
-    func removeInputSession() -> Void {
-        captureSession.beginConfiguration()
-        if let inputs = captureSession.inputs as? [AVCaptureDeviceInput] {
-            for input in inputs {
-                captureSession.removeInput(input)
-            }
-        }
-        captureSession.commitConfiguration()
-    }
-    func stopSession() {
-        sessionQueue.async {
-            if self.captureSession.isRunning {
-                self.captureSession.stopRunning()
-            }
-        }
-    }
-}
-
-
-// MARK: - AVCapturePhotoCaptureDelegate
-extension BackCameraViewController: AVCapturePhotoCaptureDelegate {
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let error = error {
-            print("error occured : \(error.localizedDescription)")
-        }
-        if let dataImage = photo.fileDataRepresentation() {
-            let dataProvider = CGDataProvider(data: dataImage as CFData)
-            let cgImageRef: CGImage! = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
-            let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImage.Orientation.right)
-            let imageData =  image.jpegData(compressionQuality: 1)
-            segmentSelectionAtIndex2?(imageData! as NSData)
-        } else {
-            print("some error here")
-        }
+        self.cameraFeedManager.removeInputSession()
+        self.cameraFeedManager.stopSession()
+        self.cameraFeedManager.delegate = nil
     }
 }
 
@@ -366,8 +271,12 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
           self.drawAfterPerformingCalculations(onInferences: displayResult.inferences, withImageSize: CGSize(width: CGFloat(width), height: CGFloat(height)))
         }
         if displayResult.inferences.count > 0 {
-            print("className ", displayResult.inferences[0].className)
-            self.segmentSelectionAtIndex?(displayResult.inferences[0].className)
+            print("className:", displayResult.inferences[0].className)
+            print("imageFrame", displayResult.imageFrame)
+            
+//            self.imageFrame = UIImage(pixelBuffer: displayResult.imageFrame)
+            self.imageFrame = UIImage(pixelBuffer: displayResult.imageFull)
+            segmentSelectionAtIndex?(displayResult.inferences[0].className)
         }
     }
     func drawAfterPerformingCalculations(onInferences inferences: [Inference], withImageSize imageSize:CGSize) {

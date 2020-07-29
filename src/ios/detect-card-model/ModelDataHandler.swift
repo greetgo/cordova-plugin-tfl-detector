@@ -21,6 +21,8 @@ import Accelerate
 struct Resultt {
   let inferenceTime: Double
   let inferences: [Inference]
+  let imageFrame: CVPixelBuffer
+  let imageFull: CVPixelBuffer
 }
 
 /// Stores one formatted inference.
@@ -133,13 +135,18 @@ class ModelDataHandler: NSObject {
   /// This class handles all data preprocessing and makes calls to run inference on a given frame
   /// through the `Interpreter`. It then formats the inferences obtained and returns the top N
   /// results for a successful inference.
+    
   func runModel(onFrame pixelBuffer: CVPixelBuffer) -> Resultt? {
-    let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
-    let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
-    let sourcePixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
+    
+    let cutPixerBuffer = resizePixelBuffer(pixelBuffer)
+    
+    let imageWidth = CVPixelBufferGetWidth(cutPixerBuffer!)
+    let imageHeight = CVPixelBufferGetHeight(cutPixerBuffer!)
+    let sourcePixelFormat = CVPixelBufferGetPixelFormatType(cutPixerBuffer!)
+    
     assert(sourcePixelFormat == kCVPixelFormatType_32ARGB ||
              sourcePixelFormat == kCVPixelFormatType_32BGRA ||
-               sourcePixelFormat == kCVPixelFormatType_32RGBA)
+               sourcePixelFormat == kCVPixelFormatType_32RGBA )
 
 
     let imageChannels = 4
@@ -147,9 +154,7 @@ class ModelDataHandler: NSObject {
 
     // Crops the image to the biggest square in the center and scales it down to model dimensions.
     let scaledSize = CGSize(width: inputWidth, height: inputHeight)
-    guard let scaledPixelBuffer = pixelBuffer.resized(to: scaledSize) else {
-      return nil
-    }
+    guard let scaledPixelBuffer = cutPixerBuffer!.resized(to: scaledSize) else { return nil }
 
     let interval: TimeInterval
 
@@ -157,14 +162,13 @@ class ModelDataHandler: NSObject {
       let inputTensor = try interpreter.input(at: 0)
 
       // Remove the alpha component from the image buffer to get the RGB data.
-      guard let rgbData = rgbDataFromBuffer(
-        scaledPixelBuffer,
-        byteCount: batchSize * inputWidth * inputHeight * inputChannels,
-        isModelQuantized: inputTensor.dataType == .uInt8
+      guard let rgbData = rgbDataFromBuffer( scaledPixelBuffer,
+                                             byteCount: batchSize * inputWidth * inputHeight * inputChannels,
+                                             isModelQuantized: inputTensor.dataType == .uInt8
       ) else {
-        print("Failed to convert the image buffer to RGB data.")
-        return nil
-      }
+            print("Failed to convert the image buffer to RGB data.")
+            return nil
+        }
 
       // Copy the RGB data to the input `Tensor`.
       try interpreter.copy(rgbData, toInputAt: 0)
@@ -187,7 +191,8 @@ class ModelDataHandler: NSObject {
     )
 
     // Returns the inference time and inferences
-    let result = Resultt(inferenceTime: interval, inferences: resultArray)
+    let result = Resultt(inferenceTime: interval, inferences: resultArray, imageFrame: cutPixerBuffer!, imageFull: pixelBuffer)
+    
     return result
   }
 
@@ -346,11 +351,11 @@ class ModelDataHandler: NSObject {
   ///       floating point values).
   /// - Returns: The RGB data representation of the image buffer or `nil` if the buffer could not be
   ///     converted.
-  private func rgbDataFromBuffer(
-    _ buffer: CVPixelBuffer,
-    byteCount: Int,
-    isModelQuantized: Bool
-  ) -> Data? {
+    private func rgbDataFromBuffer(
+        _ buffer: CVPixelBuffer,
+        byteCount: Int,
+        isModelQuantized: Bool
+    ) -> Data? {
     CVPixelBufferLockBaseAddress(buffer, .readOnly)
     defer {
       CVPixelBufferUnlockBaseAddress(buffer, .readOnly)
@@ -406,7 +411,7 @@ class ModelDataHandler: NSObject {
   }
 
   /// This assigns color for a particular class.
-  private func colorForClass(withIndex index: Int) -> UIColor {
+    private func colorForClass(withIndex index: Int) -> UIColor {
 
     // We have a set of colors and the depending upon a stride, it assigns variations to of the base
     // colors to each object based on its index.
@@ -461,3 +466,66 @@ extension Array {
     #endif  // swift(>=5.0)
   }
 }
+
+
+
+
+//func runModel(onFrame pixelBuffer: CVPixelBuffer) -> Resultt? {
+//
+//  let cutPixerBuffer = resizePixelBuffer(pixelBuffer)
+//
+//  let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
+//  let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
+//  let sourcePixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
+//
+//  assert(sourcePixelFormat == kCVPixelFormatType_32ARGB ||
+//           sourcePixelFormat == kCVPixelFormatType_32BGRA ||
+//             sourcePixelFormat == kCVPixelFormatType_32RGBA )
+//
+//
+//  let imageChannels = 4
+//  assert(imageChannels >= inputChannels)
+//
+//  // Crops the image to the biggest square in the center and scales it down to model dimensions.
+//  let scaledSize = CGSize(width: inputWidth, height: inputHeight)
+//  guard let scaledPixelBuffer = pixelBuffer.resized(to: scaledSize) else { return nil }
+//
+//  let interval: TimeInterval
+//
+//  do {
+//    let inputTensor = try interpreter.input(at: 0)
+//
+//    // Remove the alpha component from the image buffer to get the RGB data.
+//    guard let rgbData = rgbDataFromBuffer( scaledPixelBuffer,
+//                                           byteCount: batchSize * inputWidth * inputHeight * inputChannels,
+//                                           isModelQuantized: inputTensor.dataType == .uInt8
+//    ) else {
+//          print("Failed to convert the image buffer to RGB data.")
+//          return nil
+//      }
+//
+//    // Copy the RGB data to the input `Tensor`.
+//    try interpreter.copy(rgbData, toInputAt: 0)
+//
+//    // Run inference by invoking the `Interpreter`.
+//    let startDate = Date()
+//    try interpreter.invoke()
+//    interval = Date().timeIntervalSince(startDate) * 1000
+//
+//  } catch let error {
+//    print("Failed to invoke the interpreter with error: \(error.localizedDescription)")
+//    return nil
+//  }
+//
+//  // Formats the results
+//  let resultArray = formatResults(
+//    interpreter: interpreter,
+//    width: CGFloat(imageWidth),
+//    height: CGFloat(imageHeight)
+//  )
+//
+//  // Returns the inference time and inferences
+//  let result = Resultt(inferenceTime: interval, inferences: resultArray, imageFrame: cutPixerBuffer!)
+//
+//  return result
+//}
