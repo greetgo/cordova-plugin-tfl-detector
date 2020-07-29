@@ -35,6 +35,7 @@
     <source-file src="src/ios/detect-card/FontCameraViewController.swift"/>
     <source-file src="src/ios/detect-card/InferenceViewController.swift"/>
     <source-file src="src/ios/detect-card/PhotoShowViewController.swift"/>
+    <source-file src="src/ios/detect-card/CameraPreviewModel.swift"/>
 
     <source-file src="src/ios/detect-card-model/CameraFeedManager.swift"/>
     <source-file src="src/ios/detect-card-model/CurvedView.swift"/>
