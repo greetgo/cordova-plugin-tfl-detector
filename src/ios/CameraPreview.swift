@@ -42,17 +42,17 @@
     @objc(takeSnapshot:)
     func takeSnapshot(command: CDVInvokedUrlCommand) {
         if isBack == true {
-            fontVC.tapShot()
             fontVC.segmentSelectionAtIndex2 = {[weak self] (image) in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
                 self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
             }
+            fontVC.tapShot()
         }else {
-            backVC.tapShot()
             backVC.segmentSelectionAtIndex2 = {[weak self] (image) in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
                 self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
             }
+            backVC.tapShot()
         }
     }
 
@@ -78,17 +78,17 @@
     @objc(takePicture:)
     func takePicture(command: CDVInvokedUrlCommand) {
         if isBack == true {
-            fontVC.tapShot()
             fontVC.segmentSelectionAtIndex2 = {[weak self] (image) in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
                 self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
             }
+            fontVC.tapShot()
         }else {
-            backVC.tapShot()
             backVC.segmentSelectionAtIndex2 = {[weak self] (image) in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAsArrayBuffer: image as Data);
                 self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
             }
+            backVC.tapShot()
         }
     }
 
