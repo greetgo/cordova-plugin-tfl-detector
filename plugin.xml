@@ -66,6 +66,8 @@
 
     <source-file src="src/android/customview/AutoFitTextureView.java"
                  target-dir="src/com/cordovaplugintflite/customview"/>
+    <source-file src="src/android/customview/ButtonWithTopBorder.java"
+                 target-dir="src/com/cordovaplugintflite/customview"/>
     <source-file src="src/android/customview/OverlayView.java" target-dir="src/com/cordovaplugintflite/customview"/>
     <source-file src="src/android/customview/RecognitionScoreView.java"
                  target-dir="src/com/cordovaplugintflite/customview"/>
@@ -84,6 +86,9 @@
     <source-file src="src/android/camera_activity.xml" target-dir="res/layout"/>
     <source-file src="src/android/camera_theme.xml" target-dir="res/values"/>
     <source-file src="src/android/camera_ids.xml" target-dir="res/values"/>
+    <source-file src="src/android/res/color.xml" target-dir="res/values"/>
+    <source-file src="src/android/res/styles.xml" target-dir="res/values"/>
+    <source-file src="src/android/res/wocr_manual_input_button.xml" target-dir="res/drawable"/>
     <source-file src="src/android/assets/yolov4full.tflite" target-dir="assets"/>
     <source-file src="src/android/assets/coco.txt" target-dir="assets"/>
 
@@ -102,6 +107,10 @@
     <source-file src="src/android/res/drawable-xhdpi/overlay_ellipse.png" target-dir="res/drawable-xhdpi"/>
     <source-file src="src/android/res/drawable-xxhdpi/overlay_ellipse.png" target-dir="res/drawable-xxhdpi"/>
     <source-file src="src/android/res/drawable-xxxhdpi/overlay_ellipse.png" target-dir="res/drawable-xxxhdpi"/>
+
+    <config-file target="res/values/strings.xml" parent="/*">
+      <string name="wocr_button_enter_card_number">Вернуться назад</string>
+    </config-file>
 
     <framework src="androidx.exifinterface:exifinterface:1.2.0"/>
     <framework src="com.google.android.material:material:1.1.0"/>
