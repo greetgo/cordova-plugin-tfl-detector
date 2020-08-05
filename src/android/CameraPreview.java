@@ -1160,15 +1160,15 @@ public class CameraPreview extends CordovaPlugin implements CameraActivity.Camer
   }
 
   public void onBackButton() {
-    stopCamera(startCameraCallbackContext);
-    /*if(tapBackButtonContext == null) {
+//    stopCamera(startCameraCallbackContext);
+    if(tapBackButtonContext == null) {
       return;
     }
 
     Log.d(TAG, "Back button tapped, notifying");
 
     PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "Back button pressed");
-    tapBackButtonContext.sendPluginResult(pluginResult);*/
+    tapBackButtonContext.sendPluginResult(pluginResult);
   }
 
   private boolean getCameraCharacteristics(CallbackContext callbackContext) {
