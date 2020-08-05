@@ -75,7 +75,7 @@ public abstract class CameraActivity extends Fragment {
   protected CameraPreviewListener eventListener;
   private static final String TAG = "CameraActivity";
   public FrameLayout mainLayout;
-  public FrameLayout frameContainerLayout;
+  public RelativeLayout frameContainerLayout;
 
   private Preview mPreview;
   private boolean canTakePicture = true;
@@ -136,7 +136,7 @@ public abstract class CameraActivity extends Fragment {
       ImageView imageView = view.findViewById(getResources().getIdentifier("card_layout", "id", appResourcesPackage));
       RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (240 * density));
       params.leftMargin = (int) (x0 * width);
-      params.topMargin = (int) (y0 * height);
+      params.topMargin = Math.max((int) (y0 * height) - (int) (28 * density), 0);
       imageView.setLayoutParams(params);
 
     } else {
@@ -146,6 +146,15 @@ public abstract class CameraActivity extends Fragment {
       ImageView selfieOverlay = view.findViewById(getResources().getIdentifier("selfie_layout", "id", appResourcesPackage));
       selfieOverlay.setVisibility(View.VISIBLE);
     }
+
+    View enterManuallyButton = view.findViewById(getResources().getIdentifier("wocr_tv_enter_card_number_id", "id", appResourcesPackage));
+    enterManuallyButton.setVisibility(View.VISIBLE);
+    enterManuallyButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View clickview) {
+        eventListener.onBackButton();
+      }
+    });
 
     return view;
   }
@@ -175,7 +184,7 @@ public abstract class CameraActivity extends Fragment {
       //set box position and size
       FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width, height);
       layoutParams.setMargins(x, y, 0, 0);
-      frameContainerLayout = view.findViewById(getResources().getIdentifier("frame_container", "id", appResourcesPackage));
+      frameContainerLayout = view.findViewById(getResources().getIdentifier("frame_camera_cont", "id", appResourcesPackage));
       frameContainerLayout.setLayoutParams(layoutParams);
 
       //video view

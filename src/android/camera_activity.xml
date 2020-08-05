@@ -52,4 +52,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
 
+  <com.cordovaplugintflite.customview.ButtonWithTopBorder
+    style="@style/wocr_EnterManuallyButton"
+    android:id="@+id/wocr_tv_enter_card_number_id"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:includeFontPadding="false"
+    android:layout_gravity="bottom"
+    android:text="@string/wocr_button_enter_card_number" />
+
 </FrameLayout>
