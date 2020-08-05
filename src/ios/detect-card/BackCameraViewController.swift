@@ -12,6 +12,7 @@ class BackCameraViewController: UIViewController {
 
     var segmentSelectionAtIndex: ((String) -> ())?
     var segmentSelectionAtIndex2: ((NSData) -> ())?
+    var backCallBack: (() -> ())?
     var imageFrame: UIImage?
 
 
@@ -46,6 +47,15 @@ class BackCameraViewController: UIViewController {
         let label = UILabel()
         label.text = "available"
         return label
+    }()
+    lazy var backButton: UIButton = {
+        let btn = UIButton()
+        btn.setTitle("Вернуться назад", for: .normal)
+        btn.setTitleColor(.black, for: .normal)
+        btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        btn.backgroundColor = .white
+        btn.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
+        return btn
     }()
 
 
@@ -118,6 +128,13 @@ class BackCameraViewController: UIViewController {
             make.width.equalTo(100)
             make.height.equalTo(30)
         }
+
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
+            make.bottom.equalToSuperview().offset(0)
+            make.width.equalToSuperview()
+            make.height.equalTo(70)
+        }
     }
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
@@ -151,6 +168,9 @@ class BackCameraViewController: UIViewController {
         self.cameraFeedManager.removeInputSession()
         self.cameraFeedManager.stopSession()
         self.cameraFeedManager.delegate = nil
+    }
+    @objc func tapBack() -> Void {
+        backCallBack?()
     }
 }
 

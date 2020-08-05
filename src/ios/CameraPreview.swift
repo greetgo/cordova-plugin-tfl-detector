@@ -93,5 +93,18 @@
     }
 
     @objc(onBackButton:)
-    func onBackButton(command: CDVInvokedUrlCommand) {}
+    func onBackButton(command: CDVInvokedUrlCommand) {
+        if isBack == true {
+            fontVC.backCallBack = {[weak self] () in
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "back Button");
+                self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+            }
+        }else {
+            backVC.backCallBack = {[weak self] () in
+                let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "back Button");
+                self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+            }
+        }
+
+    }
 }

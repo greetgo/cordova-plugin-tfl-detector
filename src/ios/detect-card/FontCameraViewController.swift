@@ -15,6 +15,7 @@ class FontCameraViewController: UIViewController {
 
     var segmentSelectionAtIndex: ((String) -> ())?
     var segmentSelectionAtIndex2: ((NSData) -> ())?
+    var backCallBack: (() -> ())?
     var imageFrame: UIImage?
 
 
@@ -101,6 +102,15 @@ class FontCameraViewController: UIViewController {
         let view = UIView()
         view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
         return view
+    }()
+    lazy var backButton: UIButton = {
+        let btn = UIButton()
+        btn.setTitle("Вернуться назад", for: .normal)
+        btn.setTitleColor(.black, for: .normal)
+        btn.titleLabel?.font = UIFont.boldSystemFont(ofSize: 15)
+        btn.backgroundColor = .white
+        btn.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
+        return btn
     }()
 
 
@@ -249,6 +259,13 @@ class FontCameraViewController: UIViewController {
             make.width.equalTo(10)
             make.height.equalTo(85)
         }
+
+        view.addSubview(backButton)
+        backButton.snp.makeConstraints { (make) in
+            make.bottom.equalToSuperview().offset(0)
+            make.width.equalToSuperview()
+            make.height.equalTo(70)
+        }
     }
     func hexStringToUIColor (hex:String) -> UIColor {
         var cString:String = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
@@ -282,6 +299,9 @@ class FontCameraViewController: UIViewController {
         self.cameraFeedManager.removeInputSession()
         self.cameraFeedManager.stopSession()
         self.cameraFeedManager.delegate = nil
+    }
+    @objc func tapBack() -> Void {
+        backCallBack?()
     }
 }
 
