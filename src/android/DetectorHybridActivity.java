@@ -9,11 +9,12 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
-import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cordovaplugintflite.customview.OverlayView;
@@ -28,6 +29,7 @@ import com.cordovaplugintflite.tracking.MultiBoxTracker;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
@@ -70,8 +72,24 @@ public class DetectorHybridActivity extends CameraActivity {
   private MultiBoxTracker tracker;
 
   private BorderedText borderedText;
+
+  private ImageView overlayImageView;
+  private Drawable overlayDrawableGreen;
+  private Drawable overlayDrawableBlue;
+
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
+
+    String drawableName = "overlay_ellipse";
+    String imageViewId = "selfie_layout";
+    if (!"selfie".equals(overlay)) {
+      drawableName = "overlay_card";
+      imageViewId = "card_layout";
+    }
+    overlayImageView = view.findViewById(getResources().getIdentifier(imageViewId, "id", appResourcesPackage));
+    overlayDrawableGreen = getResources().getDrawable(getResources().getIdentifier(drawableName + "_green", "drawable", appResourcesPackage));
+    overlayDrawableBlue = getResources().getDrawable(getResources().getIdentifier(drawableName, "drawable", appResourcesPackage));
+
     final float textSizePx =
       TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
@@ -245,6 +263,12 @@ public class DetectorHybridActivity extends CameraActivity {
           }
 
           eventListener.onObjectDetected(detectedObject);
+
+          if (Objects.equals(detectedObject, overlay)) {
+            overlayImageView.setImageDrawable(overlayDrawableGreen);
+          } else {
+            overlayImageView.setImageDrawable(overlayDrawableBlue);
+          }
 
           //uncomment line below to enable bounding-box tracker
 //          tracker.trackResults(mappedRecognitions, currTimestamp);

@@ -88,11 +88,11 @@
     <source-file src="src/android/camera_ids.xml" target-dir="res/values"/>
     <source-file src="src/android/res/color.xml" target-dir="res/values"/>
     <source-file src="src/android/res/styles.xml" target-dir="res/values"/>
-    <source-file src="src/android/res/wocr_manual_input_button.xml" target-dir="res/drawable"/>
+    <source-file src="src/android/res/drawable/wocr_manual_input_button.xml" target-dir="res/drawable"/>
     <source-file src="src/android/assets/yolov4full.tflite" target-dir="assets"/>
     <source-file src="src/android/assets/coco.txt" target-dir="assets"/>
 
-    <source-file src="src/android/res/overlay_card.png" target-dir="res/drawable"/>
+    <source-file src="src/android/res/drawable/overlay_card.png" target-dir="res/drawable"/>
     <source-file src="src/android/res/drawable-hdpi/overlay_card.png" target-dir="res/drawable-hdpi"/>
     <source-file src="src/android/res/drawable-ldpi/overlay_card.png" target-dir="res/drawable-ldpi"/>
     <source-file src="src/android/res/drawable-mdpi/overlay_card.png" target-dir="res/drawable-mdpi"/>
@@ -100,13 +100,29 @@
     <source-file src="src/android/res/drawable-xxhdpi/overlay_card.png" target-dir="res/drawable-xxhdpi"/>
     <source-file src="src/android/res/drawable-xxxhdpi/overlay_card.png" target-dir="res/drawable-xxxhdpi"/>
 
-    <source-file src="src/android/res/overlay_ellipse.png" target-dir="res/drawable"/>
+    <source-file src="src/android/res/drawable/overlay_card_green.png" target-dir="res/drawable"/>
+    <source-file src="src/android/res/drawable-hdpi/overlay_card_green.png" target-dir="res/drawable-hdpi"/>
+    <source-file src="src/android/res/drawable-ldpi/overlay_card_green.png" target-dir="res/drawable-ldpi"/>
+    <source-file src="src/android/res/drawable-mdpi/overlay_card_green.png" target-dir="res/drawable-mdpi"/>
+    <source-file src="src/android/res/drawable-xhdpi/overlay_card_green.png" target-dir="res/drawable-xhdpi"/>
+    <source-file src="src/android/res/drawable-xxhdpi/overlay_card_green.png" target-dir="res/drawable-xxhdpi"/>
+    <source-file src="src/android/res/drawable-xxxhdpi/overlay_card_green.png" target-dir="res/drawable-xxxhdpi"/>
+
+    <source-file src="src/android/res/drawable/overlay_ellipse.png" target-dir="res/drawable"/>
     <source-file src="src/android/res/drawable-hdpi/overlay_ellipse.png" target-dir="res/drawable-hdpi"/>
     <source-file src="src/android/res/drawable-ldpi/overlay_ellipse.png" target-dir="res/drawable-ldpi"/>
     <source-file src="src/android/res/drawable-mdpi/overlay_ellipse.png" target-dir="res/drawable-mdpi"/>
     <source-file src="src/android/res/drawable-xhdpi/overlay_ellipse.png" target-dir="res/drawable-xhdpi"/>
     <source-file src="src/android/res/drawable-xxhdpi/overlay_ellipse.png" target-dir="res/drawable-xxhdpi"/>
     <source-file src="src/android/res/drawable-xxxhdpi/overlay_ellipse.png" target-dir="res/drawable-xxxhdpi"/>
+
+    <source-file src="src/android/res/drawable/overlay_ellipse_green.png" target-dir="res/drawable"/>
+    <source-file src="src/android/res/drawable-hdpi/overlay_ellipse_green.png" target-dir="res/drawable-hdpi"/>
+    <source-file src="src/android/res/drawable-ldpi/overlay_ellipse_green.png" target-dir="res/drawable-ldpi"/>
+    <source-file src="src/android/res/drawable-mdpi/overlay_ellipse_green.png" target-dir="res/drawable-mdpi"/>
+    <source-file src="src/android/res/drawable-xhdpi/overlay_ellipse_green.png" target-dir="res/drawable-xhdpi"/>
+    <source-file src="src/android/res/drawable-xxhdpi/overlay_ellipse_green.png" target-dir="res/drawable-xxhdpi"/>
+    <source-file src="src/android/res/drawable-xxxhdpi/overlay_ellipse_green.png" target-dir="res/drawable-xxxhdpi"/>
 
     <config-file target="res/values/strings.xml" parent="/*">
       <string name="wocr_button_enter_card_number">Вернуться назад</string>

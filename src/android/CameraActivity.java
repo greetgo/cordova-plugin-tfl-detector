@@ -132,15 +132,15 @@ public abstract class CameraActivity extends Fragment {
     textureView = view.findViewById(getResources().getIdentifier("texture", "id", appResourcesPackage));
 
     float density = getContext().getResources().getDisplayMetrics().density;
+
+    ImageView cardOverlay = view.findViewById(getResources().getIdentifier("card_layout", "id", appResourcesPackage));
     if (!"selfie".equals(overlay)) {
-      ImageView imageView = view.findViewById(getResources().getIdentifier("card_layout", "id", appResourcesPackage));
       RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (240 * density));
       params.leftMargin = (int) (x0 * width);
       params.topMargin = Math.max((int) (y0 * height) - (int) (28 * density), 0);
-      imageView.setLayoutParams(params);
+      cardOverlay.setLayoutParams(params);
 
     } else {
-      ImageView cardOverlay = view.findViewById(getResources().getIdentifier("card_layout", "id", appResourcesPackage));
       cardOverlay.setVisibility(View.GONE);
 
       ImageView selfieOverlay = view.findViewById(getResources().getIdentifier("selfie_layout", "id", appResourcesPackage));
