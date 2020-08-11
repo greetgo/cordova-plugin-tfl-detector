@@ -192,9 +192,8 @@ extension BackCameraViewController: InferenceViewControllerDelegate {
 // MARK: - CameraFeedManagerDelegate Methods
 extension BackCameraViewController: CameraFeedManagerDelegate {
 
-
     func didOutput(pixelBuffer: CVPixelBuffer) {
-        runModel(onPixelBuffer: pixelBuffer)
+        runModelBack(onPixelBuffer: pixelBuffer)
     }
     func sendImage(image: UIImage) {
         self.cameraFeedManager.removeInputSession()
@@ -203,7 +202,6 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
         let imageData =  image.jpegData(compressionQuality: 0.5)
         segmentSelectionAtIndex2?(imageData! as NSData)
     }
-
 
     // MARK: - Custom functions
     func sessionRunTimeErrorOccured() {
@@ -255,8 +253,7 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
 
           }
 
-
-    @objc  func runModel(onPixelBuffer pixelBuffer: CVPixelBuffer) {
+    @objc  func runModelBack(onPixelBuffer pixelBuffer: CVPixelBuffer) {
 
         // Run the live camera pixelBuffer through tensorFlow to get the result
         let currentTimeMs = Date().timeIntervalSince1970 * 1000
@@ -266,7 +263,7 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
         }
 
         previousInferenceTimeMs = currentTimeMs
-        result = self.modelDataHandler?.runModel(onFrame: pixelBuffer)
+        result = self.modelDataHandler?.runModelBack(onFrame: pixelBuffer)
 
         guard let displayResult = result else {
           return
@@ -292,9 +289,7 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
         }
         if displayResult.inferences.count > 0 {
             print("className:", displayResult.inferences[0].className)
-            print("imageFrame", displayResult.imageFrame)
-
-//            self.imageFrame = UIImage(pixelBuffer: displayResult.imageFrame)
+    
             self.imageFrame = UIImage(pixelBuffer: displayResult.imageFull)
             segmentSelectionAtIndex?(displayResult.inferences[0].className)
         }

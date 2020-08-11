@@ -1,10 +1,3 @@
-//
-//  BackCameraViewController.swift
-//  AixDetected
-//
-//  Created by greetgo on 7/9/20.
-//  Copyright © 2020 greetgo. All rights reserved.
-//
 
 import UIKit
 import AVFoundation
@@ -32,7 +25,6 @@ class FontCameraViewController: UIViewController {
     private var isCameraBack: Bool = true
 
 
-
     // MARK: - Properties
     lazy var previewView: PreviewView = {
         let view = PreviewView()
@@ -52,7 +44,7 @@ class FontCameraViewController: UIViewController {
         label.text = "available"
         return label
     }()
-    //just view
+    
     lazy var shadowTop: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
@@ -65,42 +57,42 @@ class FontCameraViewController: UIViewController {
     }()
     lazy var linetop: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         return view
     }()
     lazy var linetop1: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         return view
     }()
     lazy var linetop2: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         return view
     }()
     lazy var linetop3: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         return view
     }()
     lazy var linebottom: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         return view
     }()
     lazy var linebottom1: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         return view
     }()
     lazy var linebottom2: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         return view
     }()
     lazy var linebottom3: UIView = {
         let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 0.01306987274, green: 0.98999542, blue: 0.99308604, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
         return view
     }()
     lazy var backButton: UIButton = {
@@ -125,9 +117,9 @@ class FontCameraViewController: UIViewController {
     private lazy var cameraFeedManager = CameraFeedManager(previewView: previewView, isBackCamera: true)
     private var modelDataHandler: ModelDataHandler? = ModelDataHandler(modelFileInfo: MobileNetSSD.modelInfo, labelsFileInfo: MobileNetSSD.labelsInfo)
     private var inferenceViewController: InferenceViewController?
-
-
-
+    
+    
+    
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -418,11 +410,30 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
           self.drawAfterPerformingCalculations(onInferences: displayResult.inferences, withImageSize: CGSize(width: CGFloat(width), height: CGFloat(height)))
         }
         if displayResult.inferences.count > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.linetop.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+                self.linetop1.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+                self.linetop2.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+                self.linetop3.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+                self.linebottom.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+                self.linebottom1.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+                self.linebottom2.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+                self.linebottom3.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+            }
             print("className:", displayResult.inferences[0].className)
-            print("imageFrame", displayResult.imageFrame)
-
             self.imageFrame = UIImage(pixelBuffer: displayResult.imageFrame)
             segmentSelectionAtIndex?(displayResult.inferences[0].className)
+        }else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.linetop.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                self.linetop1.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                self.linetop2.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                self.linetop3.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                self.linebottom.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                self.linebottom1.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                self.linebottom2.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                self.linebottom3.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+            }
         }
     }
     func drawAfterPerformingCalculations(onInferences inferences: [Inference], withImageSize imageSize:CGSize) {
@@ -477,6 +488,8 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
             self.overlayView.setNeedsDisplay()
           }
 }
+
+
 
 extension UIImage {
     public convenience init?(pixelBuffer: CVPixelBuffer) {

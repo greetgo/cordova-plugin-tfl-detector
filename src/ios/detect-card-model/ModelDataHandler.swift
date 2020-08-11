@@ -17,7 +17,7 @@ import TensorFlowLite
 import UIKit
 import Accelerate
 
-/// Stores results for a particular frame that was successfully run through the `Interpreter`.
+// Stores results for a particular frame that was successfully run through the `Interpreter`.
 struct Resultt {
   let inferenceTime: Double
   let inferences: [Inference]
@@ -25,7 +25,7 @@ struct Resultt {
   let imageFull: CVPixelBuffer
 }
 
-/// Stores one formatted inference.
+// Stores one formatted inference.
 struct Inference {
   let confidence: Float
   let className: String
@@ -33,10 +33,10 @@ struct Inference {
   let displayColor: UIColor
 }
 
-/// Information about a model file or labels file.
+// Information about a model file or labels file.
 typealias FileInfo = (name: String, extension: String)
 
-/// Information about the MobileNet SSD model.
+// Information about the MobileNet SSD model.
 enum MobileNetSSD {
 //   static let modelInfo: FileInfo = (name: "detect", extension: "tflite")
 //   static let labelsInfo: FileInfo = (name: "labelmap", extension: "txt")
@@ -44,13 +44,13 @@ enum MobileNetSSD {
   static let labelsInfo: FileInfo = (name: "coco", extension: "txt")
 }
 
-/// This class handles all data preprocessing and makes calls to run inference on a given frame
-/// by invoking the `Interpreter`. It then formats the inferences obtained and returns the top N
-/// results for a successful inference.
+// This class handles all data preprocessing and makes calls to run inference on a given frame
+// by invoking the `Interpreter`. It then formats the inferences obtained and returns the top N
+// results for a successful inference.
 class ModelDataHandler: NSObject {
 
   // MARK: - Internal Properties
-  /// The current thread count used by the TensorFlow Lite Interpreter.
+  // The current thread count used by the TensorFlow Lite Interpreter.
   let threadCount: Int
   let threadCountLimit = 10
 
@@ -74,10 +74,10 @@ class ModelDataHandler: NSObject {
   let ciContext = CIContext()
   //var resizedPixelBuffer: CVPixelBuffer?
 
-  // MARK: Private properties
+  // MARK: - Private properties
   private var labels: [String] = []
 
-  /// TensorFlow Lite `Interpreter` object for performing inference on a given model.
+  // TensorFlow Lite `Interpreter` object for performing inference on a given model.
   private var interpreter: Interpreter
 
   private let bgraPixel = (channels: 4, alphaComponent: 3, lastBgrComponent: 2)
@@ -98,8 +98,8 @@ class ModelDataHandler: NSObject {
 
   // MARK: - Initialization
 
-  /// A failable initializer for `ModelDataHandler`. A new instance is created if the model and
-  /// labels files are successfully loaded from the app's main bundle. Default `threadCount` is 1.
+  // A failable initializer for `ModelDataHandler`. A new instance is created if the model and
+  // labels files are successfully loaded from the app's main bundle. Default `threadCount` is 1.
   init?(modelFileInfo: FileInfo, labelsFileInfo: FileInfo, threadCount: Int = 1) {
     let modelFilename = modelFileInfo.name
 
@@ -132,9 +132,9 @@ class ModelDataHandler: NSObject {
     loadLabels(fileInfo: labelsFileInfo)
   }
 
-  /// This class handles all data preprocessing and makes calls to run inference on a given frame
-  /// through the `Interpreter`. It then formats the inferences obtained and returns the top N
-  /// results for a successful inference.
+  // This class handles all data preprocessing and makes calls to run inference on a given frame
+  // through the `Interpreter`. It then formats the inferences obtained and returns the top N
+  // results for a successful inference.
     
   func runModel(onFrame pixelBuffer: CVPixelBuffer) -> Resultt? {
     
@@ -184,20 +184,75 @@ class ModelDataHandler: NSObject {
     }
 
     // Formats the results
-    let resultArray = formatResults(
-      interpreter: interpreter,
-      width: CGFloat(imageWidth),
-      height: CGFloat(imageHeight)
-    )
+    let resultArray = formatResults( interpreter: interpreter,
+                                     width: CGFloat(imageWidth),
+                                     height: CGFloat(imageHeight))
 
     // Returns the inference time and inferences
     let result = Resultt(inferenceTime: interval, inferences: resultArray, imageFrame: cutPixerBuffer!, imageFull: pixelBuffer)
     
     return result
   }
+    
+  func runModelBack(onFrame pixelBuffer: CVPixelBuffer) -> Resultt? {
+    
+    let imageWidth = CVPixelBufferGetWidth(pixelBuffer)
+    let imageHeight = CVPixelBufferGetHeight(pixelBuffer)
+    let sourcePixelFormat = CVPixelBufferGetPixelFormatType(pixelBuffer)
+    
+    assert(sourcePixelFormat == kCVPixelFormatType_32ARGB ||
+             sourcePixelFormat == kCVPixelFormatType_32BGRA ||
+               sourcePixelFormat == kCVPixelFormatType_32RGBA )
 
-  /// Filters out all the results with confidence score < threshold and returns the top N results
-  /// sorted in descending order.
+
+    let imageChannels = 4
+    assert(imageChannels >= inputChannels)
+
+    // Crops the image to the biggest square in the center and scales it down to model dimensions.
+    let scaledSize = CGSize(width: inputWidth, height: inputHeight)
+    guard let scaledPixelBuffer = pixelBuffer.resized(to: scaledSize) else { return nil }
+
+    let interval: TimeInterval
+
+    do {
+      let inputTensor = try interpreter.input(at: 0)
+
+      // Remove the alpha component from the image buffer to get the RGB data.
+      guard let rgbData = rgbDataFromBuffer( scaledPixelBuffer,
+                                             byteCount: batchSize * inputWidth * inputHeight * inputChannels,
+                                             isModelQuantized: inputTensor.dataType == .uInt8
+      ) else {
+            print("Failed to convert the image buffer to RGB data.")
+            return nil
+        }
+
+      // Copy the RGB data to the input `Tensor`.
+      try interpreter.copy(rgbData, toInputAt: 0)
+
+      // Run inference by invoking the `Interpreter`.
+      let startDate = Date()
+      try interpreter.invoke()
+      interval = Date().timeIntervalSince(startDate) * 1000
+
+    } catch let error {
+      print("Failed to invoke the interpreter with error: \(error.localizedDescription)")
+      return nil
+    }
+
+    // Formats the results
+    let resultArray = formatResults( interpreter: interpreter,
+                                     width: CGFloat(imageWidth),
+                                     height: CGFloat(imageHeight))
+
+    // Returns the inference time and inferences
+    let result = Resultt(inferenceTime: interval, inferences: resultArray, imageFrame: pixelBuffer, imageFull: pixelBuffer)
+    
+    return result
+  }
+  
+
+  // Filters out all the results with confidence score < threshold and returns the top N results
+  // sorted in descending order.
   func formatResults(interpreter: Interpreter, width: CGFloat, height: CGFloat) -> [Inference]{
 
     let outputBoundingBox: Tensor
@@ -324,7 +379,7 @@ class ModelDataHandler: NSObject {
     return resultsArray
   }
 
-  /// Loads the labels from the labels file and stores them in the `labels` property.
+  // Loads the labels from the labels file and stores them in the `labels` property.
   private func loadLabels(fileInfo: FileInfo) {
     let filename = fileInfo.name
     let fileExtension = fileInfo.extension
@@ -341,16 +396,16 @@ class ModelDataHandler: NSObject {
     }
   }
 
-  /// Returns the RGB data representation of the given image buffer with the specified `byteCount`.
-  ///
-  /// - Parameters
-  ///   - buffer: The BGRA pixel buffer to convert to RGB data.
-  ///   - byteCount: The expected byte count for the RGB data calculated using the values that the
-  ///       model was trained on: `batchSize * imageWidth * imageHeight * componentsCount`.
-  ///   - isModelQuantized: Whether the model is quantized (i.e. fixed point values rather than
-  ///       floating point values).
-  /// - Returns: The RGB data representation of the image buffer or `nil` if the buffer could not be
-  ///     converted.
+  // Returns the RGB data representation of the given image buffer with the specified `byteCount`.
+  //
+  // - Parameters
+  //   - buffer: The BGRA pixel buffer to convert to RGB data.
+  //   - byteCount: The expected byte count for the RGB data calculated using the values that the
+  //       model was trained on: `batchSize * imageWidth * imageHeight * componentsCount`.
+  //   - isModelQuantized: Whether the model is quantized (i.e. fixed point values rather than
+  //       floating point values).
+  // - Returns: The RGB data representation of the image buffer or `nil` if the buffer could not be
+  //     converted.
     private func rgbDataFromBuffer(
         _ buffer: CVPixelBuffer,
         byteCount: Int,
@@ -410,7 +465,7 @@ class ModelDataHandler: NSObject {
     return Data(copyingBufferOf: floats)
   }
 
-  /// This assigns color for a particular class.
+  // This assigns color for a particular class.
     private func colorForClass(withIndex index: Int) -> UIColor {
 
     // We have a set of colors and the depending upon a stride, it assigns variations to of the base
@@ -432,26 +487,26 @@ class ModelDataHandler: NSObject {
 // MARK: - Extensions
 
 extension Data {
-  /// Creates a new buffer by copying the buffer pointer of the given array.
-  ///
-  /// - Warning: The given array's element type `T` must be trivial in that it can be copied bit
-  ///     for bit with no indirection or reference-counting operations; otherwise, reinterpreting
-  ///     data from the resulting buffer has undefined behavior.
-  /// - Parameter array: An array with elements of type `T`.
+  // Creates a new buffer by copying the buffer pointer of the given array.
+  //
+  // - Warning: The given array's element type `T` must be trivial in that it can be copied bit
+  //     for bit with no indirection or reference-counting operations; otherwise, reinterpreting
+  //     data from the resulting buffer has undefined behavior.
+  // - Parameter array: An array with elements of type `T`.
   init<T>(copyingBufferOf array: [T]) {
     self = array.withUnsafeBufferPointer(Data.init)
   }
 }
 
 extension Array {
-  /// Creates a new array from the bytes of the given unsafe data.
-  ///
-  /// - Warning: The array's `Element` type must be trivial in that it can be copied bit for bit
-  ///     with no indirection or reference-counting operations; otherwise, copying the raw bytes in
-  ///     the `unsafeData`'s buffer to a new array returns an unsafe copy.
-  /// - Note: Returns `nil` if `unsafeData.count` is not a multiple of
-  ///     `MemoryLayout<Element>.stride`.
-  /// - Parameter unsafeData: The data containing the bytes to turn into an array.
+  // Creates a new array from the bytes of the given unsafe data.
+  //
+  // - Warning: The array's `Element` type must be trivial in that it can be copied bit for bit
+  //     with no indirection or reference-counting operations; otherwise, copying the raw bytes in
+  //     the `unsafeData`'s buffer to a new array returns an unsafe copy.
+  // - Note: Returns `nil` if `unsafeData.count` is not a multiple of
+  //     `MemoryLayout<Element>.stride`.
+  // - Parameter unsafeData: The data containing the bytes to turn into an array.
   init?(unsafeData: Data) {
     guard unsafeData.count % MemoryLayout<Element>.stride == 0 else { return nil }
     #if swift(>=5.0)

@@ -89,23 +89,50 @@ public func resizePixelBuffer(_ srcPixelBuffer: CVPixelBuffer,
     cannot be turned into a Metal texture.
 */
 public func resizePixelBuffer(_ pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
-    
-    let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
-    var y0 = 0.0
-    
     if UIDevice.modelName == "iPhone 6" || UIDevice.modelName == "iPhone 7" || UIDevice.modelName == "iPhone 8" {
-        y0 = Double((UIScreen.main.bounds.height * 3) - height0) / 2
+        let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
+        let y0 = Double((UIScreen.main.bounds.height * 3) - height0) / 2
+        return resizePixelBuffer(pixelBuffer,
+                                 cropX: 0,
+                                 cropY: Int(y0),
+                                 cropWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-50,
+                                 cropHeight: Int(height0),
+                                 scaleWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-50,
+                                 scaleHeight: Int(height0))
+        
+    }else if UIDevice.modelName == "iPhone X" {
+        let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
+        let y0 = Double((UIScreen.main.bounds.height * 2.5) - height0) / 2
+        return resizePixelBuffer(pixelBuffer,
+                                 cropX: 80,
+                                 cropY: Int(y0),
+                                 cropWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-250,
+                                 cropHeight: Int(height0 * 0.75),
+                                 scaleWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-250,
+                                 scaleHeight: Int(height0 * 0.75))
+        
+    }else if UIDevice.modelName == "iPhone 11" {
+        let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
+        let y0 = Double((UIScreen.main.bounds.height * 2.5) - height0) / 2
+        return resizePixelBuffer(pixelBuffer,
+                                 cropX: 80,
+                                 cropY: Int(y0),
+                                 cropWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-250,
+                                 cropHeight: Int(height0 * 0.65),
+                                 scaleWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-250,
+                                 scaleHeight: Int(height0 * 0.65))
+        
     }else {
-        y0 = Double((UIScreen.main.bounds.height * 2.5) - height0) / 2
+        let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
+        let y0 = Double((UIScreen.main.bounds.height * 2.5) - height0) / 2
+        return resizePixelBuffer(pixelBuffer,
+                                 cropX: 0,
+                                 cropY: Int(y0),
+                                 cropWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-50,
+                                 cropHeight: Int(height0),
+                                 scaleWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-50,
+                                 scaleHeight: Int(height0))
     }
-    
-    return resizePixelBuffer(pixelBuffer,
-                             cropX: 0,
-                             cropY: Int(y0),
-                             cropWidth: Int(UIScreen.main.bounds.size.width)*Int(3)-50,
-                             cropHeight: Int(height0),
-                             scaleWidth: Int(UIScreen.main.bounds.size.width)*Int(3)-50,
-                             scaleHeight: Int(height0))
 }
 
 /**
