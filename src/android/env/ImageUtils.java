@@ -28,7 +28,7 @@ public class ImageUtils {
     // Each 2x2 block takes 2 bytes to encode, one each for U and V.
     final int uvSize = ((width + 1) / 2) * ((height + 1) / 2) * 2;
 
-    return ySize + uvSize;
+    return (int) ((ySize + uvSize) * 1.1);
   }
 
   /**
