@@ -264,10 +264,19 @@ public class DetectorHybridActivity extends CameraActivity {
 
           eventListener.onObjectDetected(detectedObject);
 
-          if (Objects.equals(detectedObject, overlay)) {
-            overlayImageView.setImageDrawable(overlayDrawableGreen);
-          } else {
-            overlayImageView.setImageDrawable(overlayDrawableBlue);
+          String finalDetectedObject = detectedObject;
+          if (getActivity() != null) {
+            getActivity().runOnUiThread(new Runnable() {
+
+              @Override
+              public void run() {
+                if (Objects.equals(finalDetectedObject, overlay)) {
+                  overlayImageView.setImageDrawable(overlayDrawableGreen);
+                } else {
+                  overlayImageView.setImageDrawable(overlayDrawableBlue);
+                }
+              }
+            });
           }
 
           //uncomment line below to enable bounding-box tracker
