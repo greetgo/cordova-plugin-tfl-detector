@@ -14,7 +14,9 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.cordovaplugintflite.customview.OverlayView;
@@ -76,19 +78,22 @@ public class DetectorHybridActivity extends CameraActivity {
   private ImageView overlayImageView;
   private Drawable overlayDrawableGreen;
   private Drawable overlayDrawableBlue;
+  private LinearLayout ovalStroke;
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
 
-    String drawableName = "overlay_ellipse";
-    String imageViewId = "selfie_layout";
     if (!"selfie".equals(overlay)) {
-      drawableName = "overlay_card";
-      imageViewId = "card_layout";
+      String drawableName = "overlay_card";
+      String imageViewId = "card_layout";
+
+      overlayImageView = view.findViewById(getResources().getIdentifier(imageViewId, "id", appResourcesPackage));
+      overlayDrawableGreen = getResources().getDrawable(getResources().getIdentifier(drawableName + "_green", "drawable", appResourcesPackage));
+      overlayDrawableBlue = getResources().getDrawable(getResources().getIdentifier(drawableName, "drawable", appResourcesPackage));
+    } else {
+      ovalStroke = view.findViewById(getResources().getIdentifier("oval_stroke", "id", appResourcesPackage));
     }
-    overlayImageView = view.findViewById(getResources().getIdentifier(imageViewId, "id", appResourcesPackage));
-    overlayDrawableGreen = getResources().getDrawable(getResources().getIdentifier(drawableName + "_green", "drawable", appResourcesPackage));
-    overlayDrawableBlue = getResources().getDrawable(getResources().getIdentifier(drawableName, "drawable", appResourcesPackage));
+
 
     final float textSizePx =
       TypedValue.applyDimension(
@@ -271,9 +276,11 @@ public class DetectorHybridActivity extends CameraActivity {
               @Override
               public void run() {
                 if (Objects.equals(finalDetectedObject, overlay)) {
-                  overlayImageView.setImageDrawable(overlayDrawableGreen);
+                  if (!"selfie".equals(overlay)) overlayImageView.setImageDrawable(overlayDrawableGreen);
+                  else ovalStroke.setVisibility(View.VISIBLE);
                 } else {
-                  overlayImageView.setImageDrawable(overlayDrawableBlue);
+                  if (!"selfie".equals(overlay)) overlayImageView.setImageDrawable(overlayDrawableBlue);
+                  else ovalStroke.setVisibility(View.GONE);
                 }
               }
             });
