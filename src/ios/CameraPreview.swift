@@ -95,13 +95,13 @@
     @objc(onBackButton:)
     func onBackButton(command: CDVInvokedUrlCommand) {
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-        if isBack == true {
-            fontVC.backCallBack = {[weak self] () in
+        if self.isBack == true {
+            self.fontVC.backCallBack = {[weak self] () in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "back Button");
                 self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
             }
         }else {
-            backVC.backCallBack = {[weak self] () in
+            self.backVC.backCallBack = {[weak self] () in
                 let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "back Button");
                 self!.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
             }
