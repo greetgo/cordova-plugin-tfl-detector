@@ -35,6 +35,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.exifinterface.media.ExifInterface;
@@ -143,7 +144,7 @@ public abstract class CameraActivity extends Fragment {
     } else {
       cardOverlay.setVisibility(View.GONE);
 
-      ImageView selfieOverlay = view.findViewById(getResources().getIdentifier("selfie_layout", "id", appResourcesPackage));
+      LinearLayout selfieOverlay = view.findViewById(getResources().getIdentifier("oval_overlay", "id", appResourcesPackage));
       selfieOverlay.setVisibility(View.VISIBLE);
     }
 

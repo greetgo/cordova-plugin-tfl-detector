@@ -31,15 +31,6 @@
       android:layout_height="245dp"
       android:src="@drawable/overlay_card" />
 
-    <ImageView
-      android:id="@+id/selfie_layout"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="30dp"
-      android:layout_width="330dp"
-      android:layout_height="480dp"
-      android:visibility="gone"
-      android:src="@drawable/overlay_ellipse" />
-
   </RelativeLayout>
 
   <com.cordovaplugintflite.customview.AutoFitTextureView
@@ -60,5 +51,21 @@
     android:includeFontPadding="false"
     android:layout_gravity="bottom"
     android:text="@string/wocr_button_enter_card_number" />
+
+  <com.cordovaplugintflite.customview.OvalOverlayView
+    android:id="@+id/oval_overlay"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="56dp"
+    android:layout_height="match_parent"
+    android:visibility="gone">
+  </com.cordovaplugintflite.customview.OvalOverlayView>
+
+  <com.cordovaplugintflite.customview.OvalStrokeOverlayView
+    android:id="@+id/oval_stroke"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="56dp"
+    android:visibility="gone"
+    android:layout_height="match_parent">
+  </com.cordovaplugintflite.customview.OvalStrokeOverlayView>
 
 </FrameLayout>
