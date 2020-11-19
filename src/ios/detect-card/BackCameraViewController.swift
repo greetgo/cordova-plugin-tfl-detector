@@ -57,6 +57,27 @@ class BackCameraViewController: UIViewController {
         btn.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
         return btn
     }()
+    // canvas
+    lazy var sampleMask: UIView = {
+        let sampleMask = UIView()
+        sampleMask.frame = view.frame
+        sampleMask.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        return sampleMask
+    }()
+    lazy var circleLayer: CAShapeLayer = {
+        let circleLayer = CAShapeLayer()
+        circleLayer.borderColor = UIColor.purple.withAlphaComponent(1).cgColor
+        circleLayer.borderWidth = 14
+        circleLayer.frame = CGRect(x:0, y:0, width:sampleMask.frame.size.width, height:sampleMask.frame.size.height)
+        return circleLayer
+    }()
+    lazy var maskLayer: CALayer = {
+        let maskLayer = CALayer()
+        maskLayer.frame = sampleMask.bounds
+        maskLayer.addSublayer(circleLayer)
+        maskLayer.borderColor = UIColor.green.cgColor
+        return maskLayer
+    }()
 
 
     // MARK: - Holds the results at any time
@@ -129,7 +150,23 @@ class BackCameraViewController: UIViewController {
             make.height.equalTo(30)
         }
 
-        view.addSubview(backButton)
+        // Selfie MASKVIEW
+        view.addSubview(sampleMask)
+        let finalPath =
+            UIBezierPath(roundedRect: CGRect(x:0, y:0, width:sampleMask.frame.size.width, height:sampleMask.frame.size.height), cornerRadius: 0)
+        let width = UIScreen.main.bounds.width
+        let heigth = UIScreen.main.bounds.height
+        let circlePath = UIBezierPath(ovalIn: CGRect(x: CGFloat(width * 0.05),
+                                                     y: CGFloat(heigth * 0.2),
+                                                     width: CGFloat(width * 0.9),
+                                                     height: CGFloat(heigth * 0.6)))
+        finalPath.append(circlePath.reversing())
+        circleLayer.path = finalPath.cgPath
+        sampleMask.layer.mask = maskLayer
+
+
+        //just view
+        sampleMask.addSubview(backButton)
         backButton.snp.makeConstraints { (make) in
             make.bottom.equalToSuperview().offset(0)
             make.width.equalToSuperview()
@@ -186,8 +223,6 @@ extension BackCameraViewController: InferenceViewControllerDelegate {
         )
     }
 }
-
-
 
 // MARK: - CameraFeedManagerDelegate Methods
 extension BackCameraViewController: CameraFeedManagerDelegate {
@@ -288,10 +323,16 @@ extension BackCameraViewController: CameraFeedManagerDelegate {
           self.drawAfterPerformingCalculations(onInferences: displayResult.inferences, withImageSize: CGSize(width: CGFloat(width), height: CGFloat(height)))
         }
         if displayResult.inferences.count > 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                //self.borderForMaskView.layer.borderColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+            }
             print("className:", displayResult.inferences[0].className)
-    
             self.imageFrame = UIImage(pixelBuffer: displayResult.imageFull)
             segmentSelectionAtIndex?(displayResult.inferences[0].className)
+        }else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                //self.borderForMaskView.layer.borderColor = UIColor.clear.cgColor
+            }
         }
     }
     func drawAfterPerformingCalculations(onInferences inferences: [Inference], withImageSize imageSize:CGSize) {
