@@ -69,7 +69,8 @@
     <source-file src="src/android/customview/ButtonWithTopBorder.java"
                  target-dir="src/com/cordovaplugintflite/customview"/>
     <source-file src="src/android/customview/OvalOverlayView.java" target-dir="src/com/cordovaplugintflite/customview"/>
-    <source-file src="src/android/customview/OvalStrokeOverlayView.java" target-dir="src/com/cordovaplugintflite/customview"/>
+    <source-file src="src/android/customview/OvalStrokeOverlayView.java"
+                 target-dir="src/com/cordovaplugintflite/customview"/>
     <source-file src="src/android/customview/OverlayView.java" target-dir="src/com/cordovaplugintflite/customview"/>
     <source-file src="src/android/customview/RecognitionScoreView.java"
                  target-dir="src/com/cordovaplugintflite/customview"/>
@@ -130,7 +131,7 @@
       </feature>
     </config-file>
 
-    <config-file target="AndroidManifest.xml" parent="/manifest">
+    <config-file target="AndroidManifest.xml" parent="/manifest" mode="merge">
       <uses-feature android:name="android.hardware.camera"/>
       <uses-feature android:name="android.hardware.camera.autofocus"/>
       <uses-permission android:name="android.permission.CAMERA"/>
@@ -138,7 +139,7 @@
       <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     </config-file>
 
-    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+    <config-file target="AndroidManifest.xml" parent="/manifest/application" mode="merge">
       <activity android:name="com.cordovaplugintflite.CameraActivity" android:screenOrientation="portrait"
                 android:theme="@style/CameraPreviewTheme"/>
     </config-file>
