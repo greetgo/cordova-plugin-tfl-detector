@@ -3,3 +3,8 @@ android {
     noCompress "tflite"
   }
 }
+configurations{
+  implementation{
+    exclude group: 'com.google.zxing'
+  }
+ }
