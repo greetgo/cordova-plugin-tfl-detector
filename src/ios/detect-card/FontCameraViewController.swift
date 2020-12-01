@@ -44,55 +44,12 @@ class FontCameraViewController: UIViewController {
         label.text = "available"
         return label
     }()
-    
-    lazy var shadowTop: UIView = {
+    lazy var borderForMaskView: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        return view
-    }()
-    lazy var shadowBottom: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        return view
-    }()
-    lazy var linetop: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-        return view
-    }()
-    lazy var linetop1: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-        return view
-    }()
-    lazy var linetop2: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-        return view
-    }()
-    lazy var linetop3: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-        return view
-    }()
-    lazy var linebottom: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-        return view
-    }()
-    lazy var linebottom1: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-        return view
-    }()
-    lazy var linebottom2: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-        return view
-    }()
-    lazy var linebottom3: UIView = {
-        let view = UIView()
-        view.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+        view.backgroundColor = .clear
+        view.layer.cornerRadius = 15
+        view.layer.borderWidth = 2
+        view.layer.borderColor = UIColor.clear.cgColor
         return view
     }()
     lazy var backButton: UIButton = {
@@ -104,7 +61,26 @@ class FontCameraViewController: UIViewController {
         btn.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
         return btn
     }()
-
+    //Canvas
+    lazy var sampleMask: UIView = {
+        let sampleMask = UIView()
+        sampleMask.frame = view.frame
+        sampleMask.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        return sampleMask
+    }()
+    lazy var circleLayer: CAShapeLayer = {
+        let circleLayer = CAShapeLayer()
+        circleLayer.borderColor = UIColor.white.withAlphaComponent(1).cgColor
+        circleLayer.borderWidth = 1
+        circleLayer.frame = CGRect(x:0, y:0, width:sampleMask.frame.size.width, height:sampleMask.frame.size.height)
+        return circleLayer
+    }()
+    lazy var maskLayer: CALayer = {
+        let maskLayer = CALayer()
+        maskLayer.frame = sampleMask.bounds
+        maskLayer.addSublayer(circleLayer)
+        return maskLayer
+    }()
 
 
     // MARK: - Holds the results at any time
@@ -117,9 +93,9 @@ class FontCameraViewController: UIViewController {
     private lazy var cameraFeedManager = CameraFeedManager(previewView: previewView, isBackCamera: true)
     private var modelDataHandler: ModelDataHandler? = ModelDataHandler(modelFileInfo: MobileNetSSD.modelInfo, labelsFileInfo: MobileNetSSD.labelsInfo)
     private var inferenceViewController: InferenceViewController?
-    
-    
-    
+
+
+
     // MARK: - Lifecycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -177,86 +153,36 @@ class FontCameraViewController: UIViewController {
             make.height.equalTo(30)
         }
 
-        //shadow view
+
+        //Canvas FRONTVIEW
         let height0 = ceil(UIScreen.main.bounds.width * 1 * 0.7)
         let y0 = Int((UIScreen.main.bounds.height * 1) - height0) / 2
+        view.addSubview(sampleMask)
+        let finalPath =
+            UIBezierPath(roundedRect: CGRect(x:0, y:0, width:sampleMask.frame.size.width, height:sampleMask.frame.size.height), cornerRadius: 0)
+        let width = UIScreen.main.bounds.width
+        let circlePath = UIBezierPath(roundedRect: CGRect(x: Int(width * 0.025),
+                                                          y: y0+10,
+                                                          width: Int(width * 0.95),
+                                                          height: Int(height0-20)),
+                                      cornerRadius: 15)
+        finalPath.append(circlePath.reversing())
+        circleLayer.path = finalPath.cgPath
+        sampleMask.layer.mask = maskLayer
 
-        previewView.addSubview(shadowTop)
-        previewView.addSubview(shadowBottom)
-
-        previewView.addSubview(linetop)
-        previewView.addSubview(linetop1)
-        previewView.addSubview(linetop2)
-        previewView.addSubview(linetop3)
-
-        previewView.addSubview(linebottom)
-        previewView.addSubview(linebottom1)
-        previewView.addSubview(linebottom2)
-        previewView.addSubview(linebottom3)
-
-        shadowTop.snp.makeConstraints { (make) in
-            make.top.width.equalToSuperview()
-            make.height.equalTo(y0)
-        }
-        shadowBottom.snp.makeConstraints { (make) in
-            make.top.equalTo(shadowTop.snp.bottom).offset(height0)
-            make.bottom.width.equalToSuperview()
-        }
-        linetop.snp.makeConstraints { (make) in
-            make.top.equalTo(shadowTop.snp.bottom).offset(10)
-            make.left.equalToSuperview().offset(10)
-            make.height.equalTo(10)
-            make.width.equalTo(85)
-        }
-        linetop1.snp.makeConstraints { (make) in
-            make.top.equalTo(shadowTop.snp.bottom).offset(10)
-            make.left.equalToSuperview().offset(10)
-            make.width.equalTo(10)
-            make.height.equalTo(85)
-        }
-        linetop2.snp.makeConstraints { (make) in
-            make.top.equalTo(shadowTop.snp.bottom).offset(10)
-            make.right.equalToSuperview().offset(-10)
-            make.height.equalTo(10)
-            make.width.equalTo(85)
-        }
-        linetop3.snp.makeConstraints { (make) in
-            make.top.equalTo(shadowTop.snp.bottom).offset(10)
-            make.right.equalToSuperview().offset(-10)
-            make.width.equalTo(10)
-            make.height.equalTo(85)
-        }
-
-        linebottom.snp.makeConstraints { (make) in
-            make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
-            make.left.equalToSuperview().offset(10)
-            make.height.equalTo(10)
-            make.width.equalTo(85)
-        }
-        linebottom1.snp.makeConstraints { (make) in
-            make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
-            make.left.equalToSuperview().offset(10)
-            make.width.equalTo(10)
-            make.height.equalTo(85)
-        }
-        linebottom2.snp.makeConstraints { (make) in
-            make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
-            make.right.equalToSuperview().offset(-10)
-            make.height.equalTo(10)
-            make.width.equalTo(85)
-        }
-        linebottom3.snp.makeConstraints { (make) in
-            make.bottom.equalTo(shadowBottom.snp.top).offset(-10)
-            make.right.equalToSuperview().offset(-10)
-            make.width.equalTo(10)
-            make.height.equalTo(85)
-        }
-
-        view.addSubview(backButton)
+        //just view
+        sampleMask.addSubview(backButton)
         backButton.snp.makeConstraints { (make) in
             make.bottom.equalToSuperview().offset(0)
             make.width.equalToSuperview()
             make.height.equalTo(70)
+        }
+        sampleMask.addSubview(borderForMaskView)
+        borderForMaskView.snp.makeConstraints { (make) in
+            make.top.equalToSuperview().offset(y0+9)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(Int(height0)-18)
+            make.width.equalToSuperview().multipliedBy(0.96)
         }
     }
     func hexStringToUIColor (hex:String) -> UIColor {
@@ -411,28 +337,14 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
         }
         if displayResult.inferences.count > 0 {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.linetop.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
-                self.linetop1.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
-                self.linetop2.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
-                self.linetop3.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
-                self.linebottom.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
-                self.linebottom1.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
-                self.linebottom2.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
-                self.linebottom3.backgroundColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
+                self.borderForMaskView.layer.borderColor = #colorLiteral(red: 0.009366370738, green: 0.9976959825, blue: 0.1137116775, alpha: 1)
             }
             print("className:", displayResult.inferences[0].className)
             self.imageFrame = UIImage(pixelBuffer: displayResult.imageFrame)
             segmentSelectionAtIndex?(displayResult.inferences[0].className)
         }else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.linetop.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-                self.linetop1.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-                self.linetop2.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-                self.linetop3.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-                self.linebottom.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-                self.linebottom1.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-                self.linebottom2.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-                self.linebottom3.backgroundColor = #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
+                self.borderForMaskView.layer.borderColor = UIColor.clear.cgColor
             }
         }
     }

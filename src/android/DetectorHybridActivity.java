@@ -75,21 +75,20 @@ public class DetectorHybridActivity extends CameraActivity {
 
   private BorderedText borderedText;
 
-  private ImageView overlayImageView;
-  private Drawable overlayDrawableGreen;
-  private Drawable overlayDrawableBlue;
+  private LinearLayout cardStroke;
   private LinearLayout ovalStroke;
 
   @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
 
     if (!"selfie".equals(overlay)) {
-      String drawableName = "overlay_card";
-      String imageViewId = "card_layout";
+//      String drawableName = "overlay_card";
+//      String imageViewId = "card_layout";
 
-      overlayImageView = view.findViewById(getResources().getIdentifier(imageViewId, "id", appResourcesPackage));
-      overlayDrawableGreen = getResources().getDrawable(getResources().getIdentifier(drawableName + "_green", "drawable", appResourcesPackage));
-      overlayDrawableBlue = getResources().getDrawable(getResources().getIdentifier(drawableName, "drawable", appResourcesPackage));
+//      ImageView overlayImageView = view.findViewById(getResources().getIdentifier(imageViewId, "id", appResourcesPackage));
+//      Drawable overlayDrawableGreen = getResources().getDrawable(getResources().getIdentifier(drawableName + "_green", "drawable", appResourcesPackage));
+//      Drawable overlayDrawableBlue = getResources().getDrawable(getResources().getIdentifier(drawableName, "drawable", appResourcesPackage));
+      cardStroke = view.findViewById(getResources().getIdentifier("card_layout_stroke", "id", appResourcesPackage));
     } else {
       ovalStroke = view.findViewById(getResources().getIdentifier("oval_stroke", "id", appResourcesPackage));
     }
@@ -276,10 +275,10 @@ public class DetectorHybridActivity extends CameraActivity {
               @Override
               public void run() {
                 if (Objects.equals(finalDetectedObject, overlay)) {
-                  if (!"selfie".equals(overlay)) overlayImageView.setImageDrawable(overlayDrawableGreen);
+                  if (!"selfie".equals(overlay)) cardStroke.setVisibility(View.VISIBLE);
                   else ovalStroke.setVisibility(View.VISIBLE);
                 } else {
-                  if (!"selfie".equals(overlay)) overlayImageView.setImageDrawable(overlayDrawableBlue);
+                  if (!"selfie".equals(overlay)) cardStroke.setVisibility(View.GONE);
                   else ovalStroke.setVisibility(View.GONE);
                 }
               }

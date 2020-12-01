@@ -24,12 +24,15 @@
       android:scaleType="fitXY"
       android:layout_gravity="top" />
 
-    <ImageView
-      android:id="@+id/card_layout"
-      android:layout_centerHorizontal="true"
-      android:layout_width="wrap_content"
-      android:layout_height="245dp"
-      android:src="@drawable/overlay_card" />
+    <!--    <ImageView-->
+    <!--      android:id="@+id/card_layout"-->
+    <!--      android:layout_centerHorizontal="true"-->
+    <!--      android:layout_width="match_parent"-->
+    <!--      android:layout_height="match_parent"-->
+    <!--      android:layout_marginLeft="10dp"-->
+    <!--      android:layout_marginRight="10dp"-->
+    <!--      android:layout_centerVertical="true"-->
+    <!--      android:src="@drawable/overlay_card" />-->
 
   </RelativeLayout>
 
@@ -51,6 +54,21 @@
     android:includeFontPadding="false"
     android:layout_gravity="bottom"
     android:text="@string/wocr_button_enter_card_number" />
+
+  <com.cordovaplugintflite.customview.overlay.CardOverlayView
+    android:id="@+id/card_layout"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="56dp"
+    android:layout_height="match_parent">
+  </com.cordovaplugintflite.customview.overlay.CardOverlayView>
+
+  <com.cordovaplugintflite.customview.overlay.CardStrokeOverlayView
+    android:id="@+id/card_layout_stroke"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="56dp"
+    android:visibility="gone"
+    android:layout_height="match_parent">
+  </com.cordovaplugintflite.customview.overlay.CardStrokeOverlayView>
 
   <com.cordovaplugintflite.customview.OvalOverlayView
     android:id="@+id/oval_overlay"

@@ -132,10 +132,16 @@ public abstract class CameraActivity extends Fragment {
 
     textureView = view.findViewById(getResources().getIdentifier("texture", "id", appResourcesPackage));
 
-    float density = getContext().getResources().getDisplayMetrics().density;
+//    float density = getContext().getResources().getDisplayMetrics().density;
 
-    ImageView cardOverlay = view.findViewById(getResources().getIdentifier("card_layout", "id", appResourcesPackage));
-    if (!"selfie".equals(overlay)) {
+    LinearLayout cardOverlay = view.findViewById(getResources().getIdentifier("card_layout", "id", appResourcesPackage));
+    if ("selfie".equals(overlay)) {
+      cardOverlay.setVisibility(View.GONE);
+
+      LinearLayout selfieOverlay = view.findViewById(getResources().getIdentifier("oval_overlay", "id", appResourcesPackage));
+      selfieOverlay.setVisibility(View.VISIBLE);
+    }
+    /*if (!"selfie".equals(overlay)) {
       RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, (int) (240 * density));
       params.leftMargin = (int) (x0 * width);
       params.topMargin = Math.max((int) (y0 * height) - (int) (28 * density), 0);
@@ -146,7 +152,7 @@ public abstract class CameraActivity extends Fragment {
 
       LinearLayout selfieOverlay = view.findViewById(getResources().getIdentifier("oval_overlay", "id", appResourcesPackage));
       selfieOverlay.setVisibility(View.VISIBLE);
-    }
+    }*/
 
     View enterManuallyButton = view.findViewById(getResources().getIdentifier("wocr_tv_enter_card_number_id", "id", appResourcesPackage));
     enterManuallyButton.setVisibility(View.VISIBLE);
@@ -421,7 +427,7 @@ public abstract class CameraActivity extends Fragment {
   private void addPreviewCallback() {
     mCamera.setPreviewCallbackWithBuffer(this::onPreviewFrame);
     Camera.Size s = mCamera.getParameters().getPreviewSize();
-    mCamera.addCallbackBuffer(new byte[ImageUtils.getYUVByteSize(s.height, s.width)]);
+    mCamera.addCallbackBuffer(new byte[ImageUtils.getYUVByteSize(s.width, s.height)]);
     /*if (textureView.isAvailable()) {
       mCamera.startPreview();
     } else {
