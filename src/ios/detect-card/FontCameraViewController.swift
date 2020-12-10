@@ -210,7 +210,7 @@ class FontCameraViewController: UIViewController {
 
     // MARK: - Functions
     func tapShot() -> Void {
-        let imageData = imageFrame!.jpegData(compressionQuality: 0.5)
+        let imageData = imageFrame!.jpegData(compressionQuality: 0.4)
         segmentSelectionAtIndex2?(imageData! as NSData)
     }
     func tapStop() -> Void {
@@ -249,7 +249,7 @@ extension FontCameraViewController: CameraFeedManagerDelegate {
 //        self.cameraFeedManager.removeInputSession()
 //        self.cameraFeedManager.checkCameraConfigurationAndStartSession()
 //        present(PhotoShowViewController(image: image), animated: true)
-        let imageData =  image.jpegData(compressionQuality: 0.5)
+        let imageData =  image.jpegData(compressionQuality: 0.4)
         segmentSelectionAtIndex2?(imageData! as NSData)
     }
 
