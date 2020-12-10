@@ -27,7 +27,7 @@ public func resizePixelBuffer(_ srcPixelBuffer: CVPixelBuffer,
                               cropHeight: Int,
                               scaleWidth: Int,
                               scaleHeight: Int) -> CVPixelBuffer? {
-    
+
   let flags = CVPixelBufferLockFlags(rawValue: 0)
   guard kCVReturnSuccess == CVPixelBufferLockBaseAddress(srcPixelBuffer, flags) else {
     return nil
@@ -50,7 +50,7 @@ public func resizePixelBuffer(_ srcPixelBuffer: CVPixelBuffer,
     print("Error: out of memory")
     return nil
   }
-    
+
   var destBuffer = vImage_Buffer(data: destData,
                                  height: vImagePixelCount(scaleHeight),
                                  width: vImagePixelCount(scaleWidth),
@@ -89,7 +89,8 @@ public func resizePixelBuffer(_ srcPixelBuffer: CVPixelBuffer,
     cannot be turned into a Metal texture.
 */
 public func resizePixelBuffer(_ pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
-    if UIDevice.modelName == "iPhone 6" || UIDevice.modelName == "iPhone 7" || UIDevice.modelName == "iPhone 8" {
+
+    if UIDevice.modelName == "iPhone 6" || UIDevice.modelName == "iPhone 7" || UIDevice.modelName == "iPhone 8" || UIDevice.modelName == "iPhone SE (2nd generation)" {
         let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
         let y0 = Double((UIScreen.main.bounds.height * 3) - height0) / 2
         return resizePixelBuffer(pixelBuffer,
@@ -99,7 +100,7 @@ public func resizePixelBuffer(_ pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
                                  cropHeight: Int(height0),
                                  scaleWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-50,
                                  scaleHeight: Int(height0))
-        
+
     }else if UIDevice.modelName == "iPhone X" {
         let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
         let y0 = Double((UIScreen.main.bounds.height * 2.5) - height0) / 2
@@ -110,7 +111,7 @@ public func resizePixelBuffer(_ pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
                                  cropHeight: Int(height0 * 0.75),
                                  scaleWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-250,
                                  scaleHeight: Int(height0 * 0.75))
-        
+
     }else if UIDevice.modelName == "iPhone 11" {
         let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
         let y0 = Double((UIScreen.main.bounds.height * 2.5) - height0) / 2
@@ -121,7 +122,7 @@ public func resizePixelBuffer(_ pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
                                  cropHeight: Int(height0 * 0.65),
                                  scaleWidth: Int(UIScreen.main.bounds.size.width) * Int(3)-250,
                                  scaleHeight: Int(height0 * 0.65))
-        
+
     }else {
         let height0 = ceil(UIScreen.main.bounds.width * 3 * 0.7)
         let y0 = Double((UIScreen.main.bounds.height * 2.5) - height0) / 2
