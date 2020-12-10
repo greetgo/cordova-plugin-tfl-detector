@@ -10,6 +10,7 @@ class FontCameraViewController: UIViewController {
     var segmentSelectionAtIndex2: ((NSData) -> ())?
     var backCallBack: (() -> ())?
     var imageFrame: UIImage?
+    var colorBackground: String? = "#1d3664"
 
 
 
@@ -125,7 +126,7 @@ class FontCameraViewController: UIViewController {
 
     // MARK: - SetupViews
     func setupViews() -> Void {
-        view.backgroundColor = hexStringToUIColor(hex: "#1d3664")
+        view.backgroundColor = hexStringToUIColor(hex: self.colorBackground!)
         overlayView.backgroundColor = .clear
         self.navigationItem.setHidesBackButton(true, animated: true)
 
