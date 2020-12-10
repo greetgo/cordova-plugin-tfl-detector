@@ -7,13 +7,18 @@
     var fontVC = FontCameraViewController()
     var backVC = BackCameraViewController()
     var isBack = true
+    var colorBackground: String? = "#1d3664"
 
 
     @objc(startCamera:)
     func startCamera(command: CDVInvokedUrlCommand) {
+    if(command.arguments[13] as! String == 'white'){
+    colorBackground = "#FFFFFF"
+    }
         if command.arguments[4] as! String == "back" {
             isBack = true
             fontVC = FontCameraViewController()
+            fontVC.colorBackground =colorBackground!
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = fontVC
             window?.makeKeyAndVisible()
@@ -26,6 +31,7 @@
         }else {
             isBack = false
             backVC = BackCameraViewController()
+            backVC.colorBackground = colorBackground!
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = backVC
             window?.makeKeyAndVisible()

@@ -20,6 +20,7 @@ CameraPreview.startCamera = function(options, onSuccess, onError) {
 
   options.x = options.x || 0;
   options.y = options.y || 0;
+  options.colorBackground = options.colorBackground || 'blue'
 
   options.width = options.width || window.screen.width;
   options.height = options.height || window.screen.height;
@@ -61,7 +62,8 @@ CameraPreview.startCamera = function(options, onSuccess, onError) {
     options.tapFocus,
     options.disableExifHeaderStripping,
     options.storeToFile,
-    options.overlay
+    options.overlay,
+    options.colorBackground
   ]);
 };
 
