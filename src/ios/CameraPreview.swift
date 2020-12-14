@@ -12,13 +12,13 @@
 
     @objc(startCamera:)
     func startCamera(command: CDVInvokedUrlCommand) {
-    if(command.arguments[13] as! String == 'white'){
+    if(command.arguments[13] as! String == "white"){
     colorBackground = "#FFFFFF"
     }
         if command.arguments[4] as! String == "back" {
             isBack = true
             fontVC = FontCameraViewController()
-            fontVC.colorBackground =colorBackground!
+            fontVC.colorBackground = colorBackground!
             window = UIWindow(frame: UIScreen.main.bounds)
             window?.rootViewController = fontVC
             window?.makeKeyAndVisible()
